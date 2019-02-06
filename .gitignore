@@ -59,3 +59,10 @@ typings/
 
 # next.js build output
 .next
+
+# I've only had bad experiences resolving merge conflicts and don't understand
+# the value package-lock.json provides well enough not ignore it.
+package-lock.json
+
+# yagss cache
+.cache
