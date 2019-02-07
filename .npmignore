@@ -1,0 +1,9 @@
+docs/
+docs_scss/
+docs_src/
+docs_templates/
+yagss-config.yaml
+.cache/
+.eslintrc.json
+.gitignore
+.npmignore
