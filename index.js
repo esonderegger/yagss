@@ -417,6 +417,11 @@ function jpegs() {
       withMetadata: false,
       errorOnEnlargement: false,
     }))
+    .on('error', (err) => {
+      if (!err.message.startsWith('Available images do not match')) {
+        console.log(err);
+      }
+    })
     .pipe(gulp.dest(destDir));
 }
 
@@ -438,7 +443,22 @@ function clean() {
   ]);
 }
 
-const prerequisites = gulp.parallel([templates, scss]);
+function makeCacheDir() {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(cacheDir, { recursive: true }, () => {
+      resolve();
+    });
+  });
+}
+
+const prerequisites = gulp.series([
+  makeCacheDir,
+  gulp.parallel([
+    templates,
+    scss,
+  ]),
+]);
+
 const html = gulp.series([
   prerequisites,
   renderYagss,
@@ -446,7 +466,7 @@ const html = gulp.series([
 
 const build = gulp.parallel([
   html,
-  // jpegs,
+  jpegs,
   nonYagss,
 ]);
 
