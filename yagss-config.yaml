@@ -4,13 +4,4 @@ description: Yet another generator for static sites
 src_dir: docs_src
 dest_dir: docs
 templates_dir: docs_templates
-cache_dir: .cache
 scss_file: docs_scss/yagss.scss
-css_file: yagss.css
-social_image: /temp
-img_sizes:
-  - 440
-  - 660
-  - 880
-  - 1320
-  - 1760

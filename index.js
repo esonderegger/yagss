@@ -16,13 +16,37 @@ const sizeOf = require('image-size');
 const webpack = require('webpack');
 const yaml = require('yaml');
 
+const defaultConfig = {
+  site_url: 'https://www.example.com',
+  title: 'Hello World!',
+  description: 'This is your new site made with yagss',
+  src_dir: 'src',
+  dest_dir: 'public',
+  templates_dir: 'templates',
+  cache_dir: '.cache',
+  scss_file: 'scss/main.scss',
+  social_image: '/social_image.jpg',
+  img_sizes: [
+    440,
+    660,
+    880,
+    1320,
+    1760,
+  ],
+}
+
 
 const configPath = path.resolve(process.cwd(), 'yagss-config.yaml');
-const config = yaml.parse(fs.readFileSync(configPath, 'utf8'));
+const configFromFile = yaml.parse(fs.readFileSync(configPath, 'utf8'));
+const config = Object.assign(defaultConfig, configFromFile);
 const srcDir = path.resolve(process.cwd(), config.src_dir);
 const destDir = path.resolve(process.cwd(), config.dest_dir);
 const templatesDir = path.resolve(process.cwd(), config.templates_dir);
 const cacheDir = path.resolve(process.cwd(), config.cache_dir);
+const scssPath = path.resolve(process.cwd(), config.scss_file);
+
+const parsedScssPath = path.parse(scssPath);
+config.css_file = `${parsedScssPath.name}.css`;
 
 const docStrings = {
   html: '<!DOCTYPE html>',
@@ -390,7 +414,7 @@ function nonYagss() {
 }
 
 function scss() {
-  return gulp.src(path.resolve(process.cwd(), config.scss_file))
+  return gulp.src(scssPath)
     .pipe(sass({
       outputStyle: 'compressed',
     }))
