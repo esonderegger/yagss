@@ -18,7 +18,26 @@
       <h2>Yet another generator for static sites</h2>
     </header>
     <main>
-      <p>Documentation coming soon.</p>
+      <p>Yagss exists because it allowed me to make the kind of web site I wanted to make. If it helps you make something, I’d be thrilled to hear about it. Please reach out on github or at <a href="mailto:evan@rpy.xyz">evan@rpy.xyz</a>.</p>
+      <h2 id="quickstart">Quickstart</h2>
+      <pre><code>npx create-yagss-site my-new-site
+cd my-new-site
+npm install
+npm run start</code></pre>
+      <h2 id="configuration-options">Configuration options</h2>
+      <ul>
+        <li><code>site_url</code>: The base url where this site will be hosted. Necessary for <code>meta</code> tags like <code>canonical</code> and social sharing tags.</li>
+        <li><code>title</code>: A default value for page title if none is provided</li>
+        <li><code>description</code>: A default value for page description if none is provided</li>
+        <li><code>src_dir</code>: location for site content pre-transpilation and pre-transcoding</li>
+        <li><code>dest_dir</code>: location for converted site assets, used for local development and for deployment</li>
+        <li><code>templates_dir</code>: location for “server-side” templates, </li>
+        <li><code>cache_dir</code>: location for storing files to make site-building faster</li>
+        <li><code>scss_file</code>: It is recommended to have a single file used for site-wide global styles. </li>
+        <li><code>css_file</code>: (deprecated) in future versions this should be determined by the <code>scss_file</code> value</li>
+        <li><code>social_image</code>: default value for facebook/twitter meta tags if none is provided</li>
+        <li><code>img_sizes</code>: array of integers for image widths jpg source files should be converted to</li>
+      </ul>
     </main>
   </body>
 
