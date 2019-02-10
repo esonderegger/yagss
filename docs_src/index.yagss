@@ -23,6 +23,6 @@ npm run start
 - `dest_dir`: location for converted site assets, used for local development and for deployment
 - `templates_dir`: location for "server-side" templates,
 - `cache_dir`: location for storing files to make site-building faster
-- `scss_file`: It is recommended to have a single file used for site-wide global styles. 
+- `scss_file`: It is recommended to have a single file used for site-wide global styles.
 - `social_image`: default value for facebook/twitter meta tags if none is provided
 - `img_sizes`: array of integers for image widths jpg source files should be converted to
