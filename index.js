@@ -5,6 +5,7 @@ const fs = require('fs');
 const glob = require('glob');
 const gulp = require('gulp');
 const gulpHash = require('gulp-hash');
+const log = require('fancy-log');
 const marked = require('marked');
 const path = require('path');
 const pretty = require('pretty');
@@ -367,6 +368,7 @@ function addExifData(parsedList, baseDir) {
 }
 
 function writeYagssFile(yagssObj, destDirectory) {
+  log(`${yagssObj.relativeDir}/${yagssObj.slug}.yagss => ${yagssObj.relativeURL}`)
   const Template = require(`${cacheDir}/templates/${yagssObj.template}.jsx`);
   const element = React.createElement(Template.default, yagssObj);
   const htmlString = ReactDOMServer.renderToStaticMarkup(element);
@@ -443,7 +445,7 @@ function jpegs() {
     }))
     .on('error', (err) => {
       if (!err.message.startsWith('Available images do not match')) {
-        console.log(err);
+        log.error(err);
       }
     })
     .pipe(gulp.dest(destDir));
@@ -514,11 +516,11 @@ exports.cleanstart = gulp.series([buildFresh, serveAndWatch]);
 
 if (require.main === module) {
   if (process.argv.length < 3) {
-    console.log('yagss requires exactly one argument.');
+    log.error('yagss requires exactly one argument.');
     process.exitCode = 1;
   } else if (Object.keys(exports).includes(process.argv[2])) {
     exports[process.argv[2]]();
   } else {
-    console.log('unknown argument');
+    log.error('unknown argument');
   }
 }
