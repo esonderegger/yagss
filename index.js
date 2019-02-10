@@ -46,7 +46,7 @@ const cacheDir = path.resolve(process.cwd(), config.cache_dir);
 const scssPath = path.resolve(process.cwd(), config.scss_file);
 
 const parsedScssPath = path.parse(scssPath);
-config.css_file = `${parsedScssPath.name}.css`;
+config.css_file_relative = `${parsedScssPath.name}.css`;
 
 const docStrings = {
   html: '<!DOCTYPE html>',
@@ -380,7 +380,7 @@ function renderYagss() {
     const hashesPath = path.join(cacheDir, 'hashed-assets.json');
     let bigObj = {};
     readFilePromise(hashesPath, 'utf8').then((contents) => {
-      config.css_file = JSON.parse(contents)[config.css_file];
+      config.css_file = JSON.parse(contents)[config.css_file_relative];
       return globPromise(`${srcDir}/**/*.yagss`);
     })
       .then((matches) => {
@@ -496,11 +496,21 @@ const build = gulp.parallel([
 
 const buildFresh = gulp.series([clean, build]);
 
-exports.serve = gulp.series([localServer]);
+function watchFiles() {
+  gulp.watch(`${srcDir}/**/*.(yagss|js|jsx)`, renderYagss);
+  gulp.watch(`${srcDir}/**/*.(jpg)`, jpegs);
+  gulp.watch(`${srcDir}/**/*.!(yagss|js|jsx|jpg)`, nonYagss);
+  gulp.watch(`${parsedScssPath.dir}/**/*`, html);
+  gulp.watch(`${templatesDir}/**/*`, html);
+}
+
+const serveAndWatch = gulp.parallel([localServer, watchFiles]);
+
+exports.serve = serveAndWatch;
 exports.build = build;
 exports.cleanbuild = buildFresh;
-exports.start = gulp.series([html, localServer]);
-exports.cleanstart = gulp.series([buildFresh, localServer]);
+exports.start = gulp.series([html, serveAndWatch]);
+exports.cleanstart = gulp.series([buildFresh, serveAndWatch]);
 
 if (require.main === module) {
   if (process.argv.length < 3) {
