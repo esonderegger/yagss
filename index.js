@@ -7,6 +7,7 @@ const gulp = require('gulp');
 const gulpHash = require('gulp-hash');
 const log = require('fancy-log');
 const marked = require('marked');
+const newy = require('gulp-newy');
 const path = require('path');
 const pretty = require('pretty');
 const React = require('react');
@@ -26,7 +27,6 @@ const defaultConfig = {
   templates_dir: 'templates',
   cache_dir: '.cache',
   scss_file: 'scss/main.scss',
-  social_image: '/social_image.jpg',
   img_sizes: [
     440,
     660,
@@ -34,7 +34,7 @@ const defaultConfig = {
     1320,
     1760,
   ],
-}
+};
 
 
 const configPath = path.resolve(process.cwd(), 'yagss-config.yaml');
@@ -118,6 +118,7 @@ function transpileTemplate(srcPath, destPath) {
         },
         (err, result) => {
           if (err) {
+            log(err);
             reject(err);
           }
           writeFilePromise(destPath, result.code).then(resolve);
@@ -135,7 +136,10 @@ function templates() {
         const dest = path.join(cacheDir, 'templates', parsedPath.base);
         return transpileTemplate(jsxPath, dest);
       });
-      Promise.all(templatePromises).then(resolve);
+      Promise.all(templatePromises).then(() => {
+        log('templates rendered.');
+        resolve();
+      });
     });
   });
 }
@@ -197,11 +201,11 @@ function transpileJs(entries, outputPath) {
           }
           if (stats.compilation && stats.compilation.errors) {
             stats.compilation.errors.forEach((e) => {
-              console.error(e);
+              log.error(e);
               debugInfo.errors.push(e);
             });
           }
-          console.error(`error transpiling js: ${JSON.stringify(entries)}`);
+          log.error(`error transpiling js: ${JSON.stringify(entries)}`);
           reject(err);
         } else {
           const resolutionObj = {};
@@ -217,18 +221,25 @@ function transpileJs(entries, outputPath) {
   });
 }
 
-function parseYagssNew(filePath, baseDir) {
+function jsList(unknownInput, baseDir) {
+  if (Array.isArray(unknownInput)) {
+    return unknownInput.map(item => path.resolve(baseDir, item));
+  }
+  if (unknownInput && typeof unknownInput === 'string') {
+    return [path.resolve(baseDir, unknownInput)];
+  }
+  return [];
+}
+
+function parseYagss(filePath, baseDir) {
   return new Promise((resolve, reject) => {
-    readFilePromise(filePath, 'utf8').then((fileContents) => {
+    readFilePromise(filePath, 'utf8').then((f) => {
       const delimiter = '-*-*-*-';
-      const yamlAndMd = fileContents.split(delimiter);
-      const parsed = Object.assign({}, config, yaml.parse(yamlAndMd[0]));
-      if (yamlAndMd.length > 1) {
-        const sourceText = yamlAndMd[1];
-        parsed.content = marked(sourceText, {smartypants: true});
-      } else {
-        parsed.content = '';
-      }
+      const delimiterIndex = f.indexOf(delimiter);
+      const preParsed = delimiterIndex > -1 ? f.slice(0, f.indexOf(delimiter)) : f;
+      const parsed = Object.assign({}, config, yaml.parse(preParsed));
+      const preContent = delimiterIndex > -1 ? f.slice(delimiterIndex + delimiter.length) : '';
+      parsed.content = marked(preContent, { smartypants: true });
       if (!parsed.extension) {
         parsed.extension = 'html';
       }
@@ -239,17 +250,10 @@ function parseYagssNew(filePath, baseDir) {
       parsed.relativeDir = relativeDir;
       parsed.relativeURL = `${relativeDir}/${parsedPath.name}.${parsed.extension}`;
       parsed.url = `${parsed.site_url}${parsed.relativeURL}`;
-      const relativeSocialUrl = parsed.social_image.startsWith('/') ? parsed.social_image : path.join(relativeDir, parsed.social_image);
-      if (relativeSocialUrl.endsWith('.jpg')) {
-        const socialSize = parsed.img_sizes.find(item => item > 1200);
-        const scaledSocialUrl = `${relativeSocialUrl.slice(0, -4)}-${socialSize}px.jpg`;
-        parsed.social_image = `${parsed.site_url}${scaledSocialUrl}`;
-      } else {
-        parsed.social_image = `${parsed.site_url}${relativeSocialUrl}`;
-      }
       // cache[filePath] = parsed;
       resolve(parsed);
     }).catch((error) => {
+      log(error);
       reject(error);
     });
   });
@@ -262,8 +266,12 @@ function paginate(parsedList) {
     Object.keys(parsed).forEach((k) => {
       if (typeof parsed[k] === 'object' && parsed[k].directory) {
         noDirectories = false;
-        const filterStr = path.resolve('/', parsed[k].directory);
+        // const filterStr = path.resolve('/', parsed[k].directory);
+        const filterStr = `/${parsed[k].directory}/`;
         const matches = parsedList.filter(item => item.relativeURL.startsWith(filterStr));
+        if (parsed[k].sortOn) {
+          matches.sort((a, b) => a[parsed[k].sortOn].localeCompare(b[parsed[k].sortOn]));
+        }
         if (parsed[k].reversed) {
           matches.reverse();
         }
@@ -314,16 +322,6 @@ function getJsEntries(bigObj) {
   return entriesObj;
 }
 
-function jsList(unknownInput, baseDir) {
-  if (Array.isArray(unknownInput)) {
-    return unknownInput.map(item => path.resolve(baseDir, item));
-  }
-  if (unknownInput && typeof unknownInput === 'string') {
-    return [path.resolve(baseDir, unknownInput)];
-  }
-  return [];
-}
-
 function imageSizePromise(filePath) {
   return new Promise((resolve, reject) => {
     sizeOf(filePath, (error, dimensions) => {
@@ -368,8 +366,10 @@ function addExifData(parsedList, baseDir) {
 }
 
 function writeYagssFile(yagssObj, destDirectory) {
-  log(`${yagssObj.relativeDir}/${yagssObj.slug}.yagss => ${yagssObj.relativeURL}`)
-  const Template = require(`${cacheDir}/templates/${yagssObj.template}.jsx`);
+  log(`${yagssObj.relativeDir}/${yagssObj.slug}.yagss => ${yagssObj.relativeURL}`);
+  const templatePath = `${cacheDir}/templates/${yagssObj.template}.jsx`
+  delete require.cache[require.resolve(templatePath)];
+  const Template = require(templatePath);
   const element = React.createElement(Template.default, yagssObj);
   const htmlString = ReactDOMServer.renderToStaticMarkup(element);
   const prettified = pretty(`${docStrings[yagssObj.extension]}\n${htmlString}`);
@@ -386,7 +386,7 @@ function renderYagss() {
       return globPromise(`${srcDir}/**/*.yagss`);
     })
       .then((matches) => {
-        const parsePromises = matches.map(match => parseYagssNew(match, srcDir));
+        const parsePromises = matches.map(match => parseYagss(match, srcDir));
         return Promise.all(parsePromises);
       })
       .then((parsedListNoExif) => {
@@ -407,6 +407,8 @@ function renderYagss() {
         return Promise.all(Object.values(bigObj).map(item => writeYagssFile(item, destDir)));
       })
       .then(resolve);
+  }).catch((error) => {
+    log(error);
   });
 }
 
@@ -429,8 +431,15 @@ function scss() {
     .pipe(gulp.dest(path.resolve(process.cwd(), config.cache_dir)));
 }
 
-function jpegs() {
+function jpegVersusThumbnail(projectDir, srcFile, absSrcFile) {
+  const relativePath = absSrcFile.slice(srcDir.length, -4);
+  const smallestVersion = `${relativePath}-${config.img_sizes[0]}px.jpg`;
+  return path.join(destDir, smallestVersion);
+}
+
+function jpegs(done) {
   gulp.src(`${srcDir}/**/*.jpg`)
+    .pipe(newy(jpegVersusThumbnail))
     .pipe(responsive({
       '**/*.jpg': config.img_sizes.map(size => ({
         width: size,
@@ -449,6 +458,7 @@ function jpegs() {
       }
     })
     .pipe(gulp.dest(destDir));
+  done();
 }
 
 function localServer(done) {
@@ -470,7 +480,7 @@ function clean() {
 }
 
 function makeCacheDir() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     fs.mkdir(cacheDir, { recursive: true }, () => {
       resolve();
     });
@@ -511,7 +521,7 @@ const serveAndWatch = gulp.parallel([localServer, watchFiles]);
 exports.serve = serveAndWatch;
 exports.build = build;
 exports.cleanbuild = buildFresh;
-exports.start = gulp.series([html, serveAndWatch]);
+exports.start = gulp.series([build, serveAndWatch]);
 exports.cleanstart = gulp.series([buildFresh, serveAndWatch]);
 
 if (require.main === module) {
