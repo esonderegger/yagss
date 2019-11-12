@@ -33,7 +33,7 @@
     "gulp-connect": "^5.7.0",
     "gulp-hash": "^4.2.2",
     "gulp-newy": "^2.0.4",
-    "gulp-responsive": "2.12.0",
+    "gulp-responsive": "3.0.1",
     "gulp-sass": "^4.0.2",
     "image-size": "^0.8.3",
     "marked": "^0.7.0",
