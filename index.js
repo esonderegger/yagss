@@ -110,20 +110,18 @@ function globPromise(pattern, options) {
 
 function transpileTemplate(srcPath, destPath) {
   return new Promise((resolve, reject) => {
+    const babelOptions = {
+      presets: ['@babel/preset-env', '@babel/preset-react'],
+    };
+    const babelCb = (err, result) => {
+      if (err) {
+        log(err);
+        reject(err);
+      }
+      writeFilePromise(destPath, result.code).then(resolve);
+    };
     readFilePromise(srcPath, 'utf8').then((fileContents) => {
-      babel.transform(
-        fileContents,
-        {
-          presets: ['@babel/preset-env', '@babel/preset-react'],
-        },
-        (err, result) => {
-          if (err) {
-            log(err);
-            reject(err);
-          }
-          writeFilePromise(destPath, result.code).then(resolve);
-        }
-      );
+      babel.transform(fileContents, babelOptions, babelCb);
     });
   });
 }
@@ -281,17 +279,15 @@ function paginate(parsedList) {
         }
         for (let i = 0; i < numPages; i += 1) {
           const parsedCopy = JSON.parse(JSON.stringify(parsed));
-          parsedCopy[parsed.paginate.key] = matches.slice(
-            i * parsed.paginate.count, (i + 1) * parsed.paginate.count
-          );
+          const sliceIndices = [i * parsed.paginate.count, (i + 1) * parsed.paginate.count];
+          parsedCopy[parsed.paginate.key] = matches.slice(sliceIndices[0], sliceIndices[1]);
           for (let j = 0; j < parsedCopy[parsed.paginate.key].length; j += 1) {
             if (parsedCopy[parsed.paginate.key][j].js) {
               parsedCopy.js = parsedCopy.js.concat(parsedCopy[parsed.paginate.key][j].js);
             }
           }
-          const oldStem = parsed.relativeURL.slice(
-            parsed.relativeDir.length + 1, -(parsed.extension.length + 1)
-          );
+          const stemIndices = [parsed.relativeDir.length + 1, -(parsed.extension.length + 1)];
+          const oldStem = parsed.relativeURL.slice(stemIndices[0], stemIndices[1]);
           if (i < (numPages - 1)) {
             parsedCopy.next = `${oldStem}${i + 2}.${parsed.extension}`;
           }
@@ -335,7 +331,7 @@ function imageSizePromise(filePath) {
 }
 
 function addExifData(parsedList, baseDir) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const exifPromises = [];
     parsedList.forEach((item) => {
       if (item.images) {
@@ -350,7 +346,9 @@ function addExifData(parsedList, baseDir) {
           // });
           const addSize = new Promise((resv) => {
             imageSizePromise(filePath).then((dimensions) => {
+              /* eslint-disable */
               image.size = dimensions;
+              /* eslint-enable */
               resv();
             });
           });
@@ -367,9 +365,11 @@ function addExifData(parsedList, baseDir) {
 
 function writeYagssFile(yagssObj, destDirectory) {
   log(`${yagssObj.relativeDir}/${yagssObj.slug}.yagss => ${yagssObj.relativeURL}`);
-  const templatePath = `${cacheDir}/templates/${yagssObj.template}.jsx`
+  const templatePath = `${cacheDir}/templates/${yagssObj.template}.jsx`;
   delete require.cache[require.resolve(templatePath)];
+  /* eslint-disable */
   const Template = require(templatePath);
+  /* eslint-enable */
   const element = React.createElement(Template.default, yagssObj);
   const htmlString = ReactDOMServer.renderToStaticMarkup(element);
   const prettified = pretty(`${docStrings[yagssObj.extension]}\n${htmlString}`);
@@ -378,7 +378,7 @@ function writeYagssFile(yagssObj, destDirectory) {
 }
 
 function renderYagss() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const hashesPath = path.join(cacheDir, 'hashed-assets.json');
     let bigObj = {};
     readFilePromise(hashesPath, 'utf8').then((contents) => {
@@ -389,12 +389,7 @@ function renderYagss() {
         const parsePromises = matches.map(match => parseYagss(match, srcDir));
         return Promise.all(parsePromises);
       })
-      .then((parsedListNoExif) => {
-        // file.stem = 'sitemap';
-        // file.extname = '.xml';
-        // file.contents = siteMapContents(parsedListNoExif);
-        return addExifData(parsedListNoExif, srcDir);
-      })
+      .then(parsedListNoExif => addExifData(parsedListNoExif, srcDir))
       .then((parsedList) => {
         bigObj = paginate(parsedList);
         const jsEntries = getJsEntries(bigObj);
