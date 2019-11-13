@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint \"./**/*.js\"",
+    "docs": "node index.js build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
