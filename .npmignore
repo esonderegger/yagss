@@ -7,3 +7,4 @@ yagss-config.yaml
 .eslintrc.json
 .gitignore
 .npmignore
+.travis.yml
