@@ -24,14 +24,14 @@
   },
   "homepage": "https://github.com/esonderegger/yagss#readme",
   "dependencies": {
-    "@babel/core": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.4",
     "del": "^5.1.0",
     "fancy-log": "^1.3.3",
     "glob": "^7.1.6",
-    "gulp": "^4.0.0",
+    "gulp": "^4.0.2",
     "gulp-connect": "^5.7.0",
     "gulp-hash": "^4.2.2",
     "gulp-newy": "^2.0.4",
@@ -43,14 +43,14 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "through2": "^3.0.0",
-    "webpack": "^5.0.0-beta.6",
+    "webpack": "^5.0.0-beta.9",
     "yaml": "^1.7.2"
   },
   "devDependencies": {
     "eslint": "^5.13.0",
     "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.16.0"
+    "eslint-plugin-react": "^7.17.0"
   }
 }
