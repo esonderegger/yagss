@@ -2,7 +2,6 @@ const babel = require('@babel/core');
 const connect = require('gulp-connect');
 const del = require('del');
 const fs = require('fs');
-const glob = require('glob');
 const gulp = require('gulp');
 const gulpHash = require('gulp-hash');
 const log = require('fancy-log');
@@ -14,9 +13,10 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const responsive = require('gulp-responsive');
 const sass = require('gulp-sass');
-const sizeOf = require('image-size');
 const webpack = require('webpack');
 const yaml = require('yaml');
+const fileUtils = require('./src/file_utils');
+const imageUtils = require('./src/image_utils');
 
 const defaultConfig = {
   site_url: 'https://www.example.com',
@@ -54,60 +54,6 @@ const docStrings = {
   xml: '<?xml version="1.0" encoding="utf-8" standalone="yes"?>',
 };
 
-
-function readFilePromise(filePath, options) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, options, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-}
-
-function writeFilePromise(filePath, data, options) {
-  return new Promise((resolve, reject) => {
-    const parsedPath = path.parse(filePath);
-    fs.writeFile(filePath, data, options, (err1) => {
-      if (err1) {
-        if (err1.code === 'ENOENT') {
-          fs.mkdir(parsedPath.dir, { recursive: true }, (err2) => {
-            if (err2) {
-              reject(err2);
-            } else {
-              fs.writeFile(filePath, data, options, (err3) => {
-                if (err3) {
-                  reject(err3);
-                } else {
-                  resolve();
-                }
-              });
-            }
-          });
-        } else {
-          reject(err1);
-        }
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-function globPromise(pattern, options) {
-  return new Promise((resolve, reject) => {
-    glob(pattern, options, (err, matches) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(matches);
-      }
-    });
-  });
-}
-
 function transpileTemplate(srcPath, destPath) {
   return new Promise((resolve, reject) => {
     const babelOptions = {
@@ -118,9 +64,9 @@ function transpileTemplate(srcPath, destPath) {
         log(err);
         reject(err);
       }
-      writeFilePromise(destPath, result.code).then(resolve);
+      fileUtils.writeFilePromise(destPath, result.code).then(resolve);
     };
-    readFilePromise(srcPath, 'utf8').then((fileContents) => {
+    fileUtils.readFilePromise(srcPath, 'utf8').then((fileContents) => {
       babel.transform(fileContents, babelOptions, babelCb);
     });
   });
@@ -128,7 +74,7 @@ function transpileTemplate(srcPath, destPath) {
 
 function templates() {
   return new Promise((resolve) => {
-    globPromise(`${templatesDir}/*.jsx`).then((jsxPaths) => {
+    fileUtils.globPromise(`${templatesDir}/*.jsx`).then((jsxPaths) => {
       const templatePromises = jsxPaths.map((jsxPath) => {
         const parsedPath = path.parse(jsxPath);
         const dest = path.join(cacheDir, 'templates', parsedPath.base);
@@ -231,7 +177,7 @@ function jsList(unknownInput, baseDir) {
 
 function parseYagss(filePath, baseDir) {
   return new Promise((resolve, reject) => {
-    readFilePromise(filePath, 'utf8').then((f) => {
+    fileUtils.readFilePromise(filePath, 'utf8').then((f) => {
       const delimiter = '-*-*-*-';
       const delimiterIndex = f.indexOf(delimiter);
       const preParsed = delimiterIndex > -1 ? f.slice(0, f.indexOf(delimiter)) : f;
@@ -318,51 +264,6 @@ function getJsEntries(bigObj) {
   return entriesObj;
 }
 
-function imageSizePromise(filePath) {
-  return new Promise((resolve, reject) => {
-    sizeOf(filePath, (error, dimensions) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(dimensions);
-      }
-    });
-  });
-}
-
-function addExifData(parsedList, baseDir) {
-  return new Promise((resolve) => {
-    const exifPromises = [];
-    parsedList.forEach((item) => {
-      if (item.images) {
-        item.images.forEach((image) => {
-          const imgDir = path.join(baseDir, item.relativeDir, image.filename);
-          const filePath = `${imgDir}.jpg`;
-          // const addExif = new Promise((resv) => {
-          //   exifPromise(filePath).then((exifData) => {
-          //     image.exif = exifData;
-          //     resv();
-          //   });
-          // });
-          const addSize = new Promise((resv) => {
-            imageSizePromise(filePath).then((dimensions) => {
-              /* eslint-disable */
-              image.size = dimensions;
-              /* eslint-enable */
-              resv();
-            });
-          });
-          // exifPromises.push(addExif);
-          exifPromises.push(addSize);
-        });
-      }
-    });
-    Promise.all(exifPromises).then(() => {
-      resolve(parsedList);
-    });
-  });
-}
-
 function writeYagssFile(yagssObj, destDirectory) {
   log(`${yagssObj.relativeDir}/${yagssObj.slug}.yagss => ${yagssObj.relativeURL}`);
   const templatePath = `${cacheDir}/templates/${yagssObj.template}.jsx`;
@@ -374,22 +275,22 @@ function writeYagssFile(yagssObj, destDirectory) {
   const htmlString = ReactDOMServer.renderToStaticMarkup(element);
   const prettified = pretty(`${docStrings[yagssObj.extension]}\n${htmlString}`);
   const destPath = path.join(destDirectory, yagssObj.relativeURL);
-  return writeFilePromise(destPath, prettified);
+  return fileUtils.writeFilePromise(destPath, prettified);
 }
 
 function renderYagss() {
   return new Promise((resolve) => {
     const hashesPath = path.join(cacheDir, 'hashed-assets.json');
     let bigObj = {};
-    readFilePromise(hashesPath, 'utf8').then((contents) => {
+    fileUtils.readFilePromise(hashesPath, 'utf8').then((contents) => {
       config.css_file = JSON.parse(contents)[config.css_file_relative];
-      return globPromise(`${srcDir}/**/*.yagss`);
+      return fileUtils.globPromise(`${srcDir}/**/*.yagss`);
     })
       .then((matches) => {
         const parsePromises = matches.map(match => parseYagss(match, srcDir));
         return Promise.all(parsePromises);
       })
-      .then(parsedListNoExif => addExifData(parsedListNoExif, srcDir))
+      .then(parsedListNoExif => imageUtils.addExifData(parsedListNoExif, srcDir))
       .then((parsedList) => {
         bigObj = paginate(parsedList);
         const jsEntries = getJsEntries(bigObj);
