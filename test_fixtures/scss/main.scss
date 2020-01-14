@@ -1,0 +1,10 @@
+@import 'variables';
+
+body {
+  color: $black;
+}
+
+.reverse {
+  background-color: $black;
+  color: $white;
+}
