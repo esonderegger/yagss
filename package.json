@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"./**/*.js\"",
-    "docs": "node index.js build",
+    "docs": "NODE_ENV=production node index.js cleanbuild",
     "test": "jest"
   },
   "repository": {
@@ -34,13 +34,12 @@
     "glob": "^7.1.6",
     "gulp": "^4.0.2",
     "gulp-connect": "^5.7.0",
-    "gulp-hash": "^4.2.2",
     "gulp-newy": "^2.0.4",
     "gulp-responsive": "3.0.1",
-    "gulp-sass": "^4.0.2",
     "image-size": "^0.8.3",
     "iptc-reader": "^1.0.0",
     "marked": "^0.8.0",
+    "node-sass": "^4.13.0",
     "pretty": "^2.0.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

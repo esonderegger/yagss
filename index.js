@@ -3,7 +3,6 @@ const connect = require('gulp-connect');
 const del = require('del');
 const fs = require('fs');
 const gulp = require('gulp');
-const gulpHash = require('gulp-hash');
 const log = require('fancy-log');
 const marked = require('marked');
 const newy = require('gulp-newy');
@@ -12,11 +11,10 @@ const pretty = require('pretty');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const responsive = require('gulp-responsive');
-const sass = require('gulp-sass');
-const webpack = require('webpack');
 const yaml = require('yaml');
 const fileUtils = require('./src/file_utils');
 const imageUtils = require('./src/image_utils');
+const webpackUtils = require('./src/webpack_utils');
 
 const defaultConfig = {
   site_url: 'https://www.example.com',
@@ -47,7 +45,7 @@ const cacheDir = path.resolve(process.cwd(), config.cache_dir);
 const scssPath = path.resolve(process.cwd(), config.scss_file);
 
 const parsedScssPath = path.parse(scssPath);
-config.css_file_relative = `${parsedScssPath.name}.css`;
+config.css_file_relative = parsedScssPath.name;
 
 const docStrings = {
   html: '<!DOCTYPE html>',
@@ -63,8 +61,9 @@ function transpileTemplate(srcPath, destPath) {
       if (err) {
         log(err);
         reject(err);
+      } else {
+        fileUtils.writeFilePromise(destPath, result.code).then(resolve);
       }
-      fileUtils.writeFilePromise(destPath, result.code).then(resolve);
     };
     fileUtils.readFilePromise(srcPath, 'utf8').then((fileContents) => {
       babel.transform(fileContents, babelOptions, babelCb);
@@ -73,95 +72,20 @@ function transpileTemplate(srcPath, destPath) {
 }
 
 function templates() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     fileUtils.globPromise(`${templatesDir}/*.jsx`).then((jsxPaths) => {
       const templatePromises = jsxPaths.map((jsxPath) => {
         const parsedPath = path.parse(jsxPath);
         const dest = path.join(cacheDir, 'templates', parsedPath.base);
         return transpileTemplate(jsxPath, dest);
       });
-      Promise.all(templatePromises).then(() => {
-        log('templates rendered.');
-        resolve();
-      });
+      Promise.all(templatePromises)
+        .then(() => {
+          log('templates rendered.');
+          resolve();
+        })
+        .catch(reject);
     });
-  });
-}
-
-function transpileJs(entries, outputPath) {
-  const envMode = process.env.NODE_ENV || 'development';
-  return new Promise((resolve, reject) => {
-    if (Object.keys(entries).length === 0) {
-      resolve({});
-    } else {
-      webpack({
-        mode: envMode,
-        entry: entries,
-        output: {
-          path: outputPath,
-          filename: '[name].[chunkhash:8].js',
-        },
-        optimization: {
-          splitChunks: {
-            chunks: 'all',
-            maxInitialRequests: Infinity,
-            minSize: 0,
-            cacheGroups: {
-              vendor: {
-                test: /[\\/]node_modules[\\/]/,
-                name: (module) => {
-                  const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-                  return packageName.replace('@', '');
-                },
-              },
-            },
-          },
-        },
-        cache: {
-          type: 'filesystem',
-        },
-        module: {
-          rules: [
-            {
-              test: /\.(js|jsx)$/,
-              exclude: /node_modules/,
-              use: {
-                loader: 'babel-loader',
-                options: {
-                  presets: [
-                    '@babel/env',
-                    '@babel/preset-react',
-                  ],
-                },
-              },
-            },
-          ],
-        },
-      }, (err, stats) => {
-        if (err || stats.hasErrors()) {
-          const debugInfo = { entries, errors: [] };
-          if (err) {
-            debugInfo.errors.push(err);
-          }
-          if (stats.compilation && stats.compilation.errors) {
-            stats.compilation.errors.forEach((e) => {
-              log.error(e);
-              debugInfo.errors.push(e);
-            });
-          }
-          log.error(`error transpiling js: ${JSON.stringify(entries)}`);
-          reject(err);
-        } else {
-          const resolutionObj = {};
-          stats.compilation.entrypoints.forEach((ep) => {
-            const epFiles = ep.chunks.reduce((acc, val) => acc.concat(val.files), []);
-            const withSlashes = epFiles.map(f => path.join('/', f));
-            resolutionObj[ep.options.name] = withSlashes;
-          });
-          resolve(resolutionObj);
-        }
-      });
-    }
   });
 }
 
@@ -294,7 +218,7 @@ function renderYagss() {
       .then((parsedList) => {
         bigObj = paginate(parsedList);
         const jsEntries = getJsEntries(bigObj);
-        return transpileJs(jsEntries, destDir);
+        return webpackUtils.transpileJs(jsEntries, destDir);
       })
       .then((jsHashes) => {
         Object.keys(jsHashes).forEach((relativeURL) => {
@@ -313,18 +237,10 @@ function nonYagss() {
     .pipe(gulp.dest(destDir));
 }
 
-function scss() {
-  return gulp.src(scssPath)
-    .pipe(sass({
-      outputStyle: 'compressed',
-    }))
-    .pipe(gulpHash({ template: '<%= name %>.<%= hash %>.min<%= ext %>' }))
-    .pipe(gulp.dest(destDir))
-    .pipe(gulpHash.manifest('hashed-assets.json', {
-      deleteOld: true,
-      sourceDir: destDir,
-    }))
-    .pipe(gulp.dest(path.resolve(process.cwd(), config.cache_dir)));
+async function scss() {
+  const hashes = await webpackUtils.transpileScss(scssPath, destDir, process.env.NODE_ENV === 'production');
+  const hashesPath = path.join(cacheDir, 'hashed-assets.json');
+  return fileUtils.writeFilePromise(hashesPath, JSON.stringify(hashes, null, 2), {});
 }
 
 function jpegVersusThumbnail(projectDir, srcFile, absSrcFile) {

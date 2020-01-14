@@ -10,6 +10,14 @@
   "plugins": [
     "react"
   ],
+  "rules": {
+    "jest/no-hooks": [
+      "error",
+      {
+        "allow": ["beforeEach", "beforeAll", "afterEach", "afterAll"]
+      }
+    ]
+  },
   "env": {
     "browser": true
   }
