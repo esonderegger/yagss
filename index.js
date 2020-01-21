@@ -1,4 +1,3 @@
-const babel = require('@babel/core');
 const connect = require('gulp-connect');
 const del = require('del');
 const fs = require('fs');
@@ -12,6 +11,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const responsive = require('gulp-responsive');
 const yaml = require('yaml');
+const babelUtils = require('./src/babel_utils');
 const fileUtils = require('./src/file_utils');
 const imageUtils = require('./src/image_utils');
 const webpackUtils = require('./src/webpack_utils');
@@ -52,32 +52,13 @@ const docStrings = {
   xml: '<?xml version="1.0" encoding="utf-8" standalone="yes"?>',
 };
 
-function transpileTemplate(srcPath, destPath) {
-  return new Promise((resolve, reject) => {
-    const babelOptions = {
-      presets: ['@babel/preset-env', '@babel/preset-react'],
-    };
-    const babelCb = (err, result) => {
-      if (err) {
-        log(err);
-        reject(err);
-      } else {
-        fileUtils.writeFilePromise(destPath, result.code).then(resolve);
-      }
-    };
-    fileUtils.readFilePromise(srcPath, 'utf8').then((fileContents) => {
-      babel.transform(fileContents, babelOptions, babelCb);
-    });
-  });
-}
-
 function templates() {
   return new Promise((resolve, reject) => {
     fileUtils.globPromise(`${templatesDir}/*.jsx`).then((jsxPaths) => {
       const templatePromises = jsxPaths.map((jsxPath) => {
         const parsedPath = path.parse(jsxPath);
         const dest = path.join(cacheDir, 'templates', parsedPath.base);
-        return transpileTemplate(jsxPath, dest);
+        return babelUtils.transpileTemplate(jsxPath, dest);
       });
       Promise.all(templatePromises)
         .then(() => {
