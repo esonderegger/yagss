@@ -13,7 +13,7 @@ describe('transpileJs', () => {
   it('transpileJs can transpile a simple react component', async () => {
     expect.hasAssertions();
     const entries = ['../test_fixtures/basic.jsx'];
-    const jsEntries = entries.map(entry => path.resolve(__dirname, entry));
+    const jsEntries = entries.map((entry) => path.resolve(__dirname, entry));
     const destDir = path.resolve(__dirname, '../test_destination');
     const data = await webpackUtils.transpileJs(jsEntries, destDir);
     expect(typeof data).toBe('object');
