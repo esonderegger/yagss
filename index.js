@@ -72,7 +72,7 @@ function templates() {
 
 function jsList(unknownInput, baseDir) {
   if (Array.isArray(unknownInput)) {
-    return unknownInput.map(item => path.resolve(baseDir, item));
+    return unknownInput.map((item) => path.resolve(baseDir, item));
   }
   if (unknownInput && typeof unknownInput === 'string') {
     return [path.resolve(baseDir, unknownInput)];
@@ -86,6 +86,7 @@ function parseYagss(filePath, baseDir) {
       const delimiter = '-*-*-*-';
       const delimiterIndex = f.indexOf(delimiter);
       const preParsed = delimiterIndex > -1 ? f.slice(0, f.indexOf(delimiter)) : f;
+      // eslint-disable-next-line prefer-object-spread
       const parsed = Object.assign({}, config, yaml.parse(preParsed));
       const preContent = delimiterIndex > -1 ? f.slice(delimiterIndex + delimiter.length) : '';
       parsed.content = marked(preContent, { smartypants: true });
@@ -117,7 +118,7 @@ function paginate(parsedList) {
         noDirectories = false;
         // const filterStr = path.resolve('/', parsed[k].directory);
         const filterStr = `/${parsed[k].directory}/`;
-        const matches = parsedList.filter(item => item.relativeURL.startsWith(filterStr));
+        const matches = parsedList.filter((item) => item.relativeURL.startsWith(filterStr));
         if (parsed[k].sortOn) {
           matches.sort((a, b) => a[parsed[k].sortOn].localeCompare(b[parsed[k].sortOn]));
         }
@@ -192,10 +193,10 @@ function renderYagss() {
       return fileUtils.globPromise(`${srcDir}/**/*.yagss`);
     })
       .then((matches) => {
-        const parsePromises = matches.map(match => parseYagss(match, srcDir));
+        const parsePromises = matches.map((match) => parseYagss(match, srcDir));
         return Promise.all(parsePromises);
       })
-      .then(parsedListNoExif => imageUtils.addExifData(parsedListNoExif, srcDir))
+      .then((parsedListNoExif) => imageUtils.addExifData(parsedListNoExif, srcDir))
       .then((parsedList) => {
         bigObj = paginate(parsedList);
         const jsEntries = getJsEntries(bigObj);
@@ -205,7 +206,7 @@ function renderYagss() {
         Object.keys(jsHashes).forEach((relativeURL) => {
           bigObj[relativeURL].bundledJS = jsHashes[relativeURL];
         });
-        return Promise.all(Object.values(bigObj).map(item => writeYagssFile(item, destDir)));
+        return Promise.all(Object.values(bigObj).map((item) => writeYagssFile(item, destDir)));
       })
       .then(resolve);
   }).catch((error) => {
@@ -234,7 +235,7 @@ function jpegs(done) {
   gulp.src(`${srcDir}/**/*.jpg`)
     .pipe(newy(jpegVersusThumbnail))
     .pipe(responsive({
-      '**/*.jpg': config.img_sizes.map(size => ({
+      '**/*.jpg': config.img_sizes.map((size) => ({
         width: size,
         rename: { suffix: `-${size}px` },
         withoutEnlargement: false,

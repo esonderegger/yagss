@@ -78,7 +78,7 @@ function transpileJs(entries, outputPath) {
               });
               return acc;
             }, new Set());
-            const withSlashes = Array.from(epFiles).map(f => path.join('/', f));
+            const withSlashes = Array.from(epFiles).map((f) => path.join('/', f));
             resolutionObj[ep.options.name] = withSlashes;
           });
           resolve(resolutionObj);
