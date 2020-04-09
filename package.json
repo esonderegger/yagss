@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/esonderegger/yagss#readme",
   "dependencies": {
-    "@babel/core": "^7.8.7",
-    "@babel/preset-env": "^7.8.7",
-    "@babel/preset-react": "^7.8.3",
-    "babel-loader": "^8.0.6",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-react": "^7.9.4",
+    "babel-loader": "^8.1.0",
     "del": "^5.1.0",
     "exif-reader": "^1.0.3",
     "fancy-log": "^1.3.3",
@@ -38,23 +38,23 @@
     "gulp-responsive": "3.0.1",
     "image-size": "^0.8.3",
     "iptc-reader": "^1.0.0",
-    "marked": "^0.8.0",
+    "marked": "^0.8.2",
     "node-sass": "^4.13.1",
     "pretty": "^2.0.0",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "sharp": "^0.25.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "sharp": "^0.25.2",
     "through2": "^3.0.1",
     "webpack": "^5.0.0-beta.14",
-    "yaml": "^1.8.2"
+    "yaml": "^1.8.3"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-plugin-import": "^2.20.1",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
-    "jest": "^25.1.0"
+    "jest": "^25.3.0"
   }
 }
