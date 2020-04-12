@@ -3,7 +3,6 @@ const del = require('del');
 const fs = require('fs');
 const gulp = require('gulp');
 const log = require('fancy-log');
-const marked = require('marked');
 const newy = require('gulp-newy');
 const path = require('path');
 const pretty = require('pretty');
@@ -14,6 +13,7 @@ const yaml = require('yaml');
 const babelUtils = require('./src/babel_utils');
 const fileUtils = require('./src/file_utils');
 const imageUtils = require('./src/image_utils');
+const markdownUtils = require('./src/md_utils');
 const webpackUtils = require('./src/webpack_utils');
 
 const defaultConfig = {
@@ -66,45 +66,6 @@ function templates() {
           resolve();
         })
         .catch(reject);
-    });
-  });
-}
-
-function jsList(unknownInput, baseDir) {
-  if (Array.isArray(unknownInput)) {
-    return unknownInput.map((item) => path.resolve(baseDir, item));
-  }
-  if (unknownInput && typeof unknownInput === 'string') {
-    return [path.resolve(baseDir, unknownInput)];
-  }
-  return [];
-}
-
-function parseYagss(filePath, baseDir) {
-  return new Promise((resolve, reject) => {
-    fileUtils.readFilePromise(filePath, 'utf8').then((f) => {
-      const delimiter = '-*-*-*-';
-      const delimiterIndex = f.indexOf(delimiter);
-      const preParsed = delimiterIndex > -1 ? f.slice(0, f.indexOf(delimiter)) : f;
-      // eslint-disable-next-line prefer-object-spread
-      const parsed = Object.assign({}, config, yaml.parse(preParsed));
-      const preContent = delimiterIndex > -1 ? f.slice(delimiterIndex + delimiter.length) : '';
-      parsed.content = marked(preContent, { smartypants: true });
-      if (!parsed.extension) {
-        parsed.extension = 'html';
-      }
-      const parsedPath = path.parse(filePath);
-      const relativeDir = parsedPath.dir.slice(baseDir.length);
-      parsed.js = jsList(parsed.js, parsedPath.dir);
-      parsed.slug = parsedPath.name;
-      parsed.relativeDir = relativeDir;
-      parsed.relativeURL = `${relativeDir}/${parsedPath.name}.${parsed.extension}`;
-      parsed.url = `${parsed.site_url}${parsed.relativeURL}`;
-      // cache[filePath] = parsed;
-      resolve(parsed);
-    }).catch((error) => {
-      log(error);
-      reject(error);
     });
   });
 }
@@ -170,8 +131,8 @@ function getJsEntries(bigObj) {
   return entriesObj;
 }
 
-function writeYagssFile(yagssObj, destDirectory) {
-  log(`${yagssObj.relativeDir}/${yagssObj.slug}.yagss => ${yagssObj.relativeURL}`);
+function writeMdFile(yagssObj, destDirectory) {
+  log(`${yagssObj.relativeDir}/${yagssObj.slug}.md => ${yagssObj.relativeURL}`);
   const templatePath = `${cacheDir}/templates/${yagssObj.template}.jsx`;
   delete require.cache[require.resolve(templatePath)];
   /* eslint-disable */
@@ -189,11 +150,13 @@ function renderYagss() {
     const hashesPath = path.join(cacheDir, 'hashed-assets.json');
     let bigObj = {};
     fileUtils.readFilePromise(hashesPath, 'utf8').then((contents) => {
-      config.css_file = JSON.parse(contents)[config.css_file_relative];
-      return fileUtils.globPromise(`${srcDir}/**/*.yagss`);
+      config.cssFile = JSON.parse(contents)[config.css_file_relative];
+      return fileUtils.globPromise(`${srcDir}/**/*.md`);
     })
       .then((matches) => {
-        const parsePromises = matches.map((match) => parseYagss(match, srcDir));
+        const parsePromises = matches.map((match) => (
+          markdownUtils.parseMdPromise(match, srcDir, config)
+        ));
         return Promise.all(parsePromises);
       })
       .then((parsedListNoExif) => imageUtils.addExifData(parsedListNoExif, srcDir))
@@ -206,7 +169,7 @@ function renderYagss() {
         Object.keys(jsHashes).forEach((relativeURL) => {
           bigObj[relativeURL].bundledJS = jsHashes[relativeURL];
         });
-        return Promise.all(Object.values(bigObj).map((item) => writeYagssFile(item, destDir)));
+        return Promise.all(Object.values(bigObj).map((item) => writeMdFile(item, destDir)));
       })
       .then(resolve);
   }).catch((error) => {
@@ -215,7 +178,7 @@ function renderYagss() {
 }
 
 function nonYagss() {
-  return gulp.src(`${srcDir}/**/*.!(yagss|js|jsx|jpg)`)
+  return gulp.src(`${srcDir}/**/*.!(md|js|jsx|jpg)`)
     .pipe(gulp.dest(destDir));
 }
 
@@ -303,9 +266,9 @@ const build = gulp.parallel([
 const buildFresh = gulp.series([clean, build]);
 
 function watchFiles() {
-  gulp.watch(`${srcDir}/**/*.(yagss|js|jsx)`, renderYagss);
+  gulp.watch(`${srcDir}/**/*.(md|js|jsx)`, renderYagss);
   gulp.watch(`${srcDir}/**/*.(jpg)`, jpegs);
-  gulp.watch(`${srcDir}/**/*.!(yagss|js|jsx|jpg)`, nonYagss);
+  gulp.watch(`${srcDir}/**/*.!(md|js|jsx|jpg)`, nonYagss);
   gulp.watch(`${parsedScssPath.dir}/**/*`, html);
   gulp.watch(`${templatesDir}/**/*`, html);
 }
