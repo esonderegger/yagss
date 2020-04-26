@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+/* eslint-disable import/no-extraneous-dependencies */
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts';
+/* eslint-enable import/no-extraneous-dependencies */
 
 const data = [
   {

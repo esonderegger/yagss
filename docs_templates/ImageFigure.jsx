@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 const imageFigure = (props) => {
   const {
-    image, caption, images, relativeDir, imgSizes,
+    image, caption, images, relativeDir, imgSizes, siteUrl,
   } = props;
   const theImage = images.find((img) => img.filename === image);
   if (!theImage) return null;
   const theCaption = caption || theImage.caption || image;
   const sources = imgSizes.map((size) => ({
-    src: `${relativeDir}/${image}-${size}px.jpg`,
+    src: `${siteUrl}${relativeDir}/${image}-${size}px.jpg`,
     size,
   }));
   const srcSet = sources.map((source) => `${source.src} ${source.size}w`).join(', ');
@@ -34,6 +34,7 @@ imageFigure.propTypes = {
     value: PropTypes.number,
   })),
   relativeDir: PropTypes.string.isRequired,
+  siteUrl: PropTypes.string.isRequired,
   imgSizes: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
