@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charSet="utf-8" />
+    <title>Article with Images</title>
+    <link rel="canonical" href="https://esonderegger.github.io/yagss/examples/01-article-with-images/index.html" />
+    <link rel="icon" href="../../favicon-32x32.png" />
+    <meta name="description" content="Automatically create responsive images" />
+    <meta name="robots" content="index, follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../../yagss.f89c350e.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <section class="site-header">
+      <header>
+        <h1>Yagss</h1>
+        <h2>Yet another generator for static sites</h2>
+      </header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+          <li><a href="https://github.com/esonderegger/yagss">Source</a></li>
+        </ul>
+      </nav>
+    </section>
+    <main>
+      <article class="article">
+        <header>
+          <h1>Article with Images</h1>
+          <p>Automatically create responsive images</p>
+        </header>
+        <section>
+          <p>This is an example article showing how to include static components like images in them.</p>
+          <p>One of the most powerful features of Yagss is how it automatically scales jpeg images in the source directory and parses their metadata, making that metadata availale to the rendering context.</p>
+        </section>
+        <div id="flowers">
+          <figure><img src="/examples/01-article-with-images/flowers-440px.jpg" alt="A close-up of a flower in Crestwood, Washington, DC" intrinsicsize="4288 x 2848" srcSet="/examples/01-article-with-images/flowers-440px.jpg 440w, /examples/01-article-with-images/flowers-660px.jpg 660w, /examples/01-article-with-images/flowers-880px.jpg 880w, /examples/01-article-with-images/flowers-1320px.jpg 1320w, /examples/01-article-with-images/flowers-1760px.jpg 1760w" />
+            <figcaption>A close-up of a flower in Crestwood, Washington, DC</figcaption>
+          </figure>
+        </div>
+        <section>
+          <p>This is simply a collection of snippets of text written in markdown, interspersed with snippets of yaml specifying which template to use.</p>
+        </section>
+        <div id="birds">
+          <figure><img src="/examples/01-article-with-images/birds-440px.jpg" alt="Two doves sitting on a fence in Crestwood, Washington, DC" intrinsicsize="4288 x 2848" srcSet="/examples/01-article-with-images/birds-440px.jpg 440w, /examples/01-article-with-images/birds-660px.jpg 660w, /examples/01-article-with-images/birds-880px.jpg 880w, /examples/01-article-with-images/birds-1320px.jpg 1320w, /examples/01-article-with-images/birds-1760px.jpg 1760w" />
+            <figcaption>Two doves sitting on a fence in Crestwood, Washington, DC</figcaption>
+          </figure>
+        </div>
+        <section>
+          <p>There is no need for hydration because the DOM never changes after the build process is run.</p>
+        </section>
+      </article>
+    </main>
+  </body>
+
+</html>

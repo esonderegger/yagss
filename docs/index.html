@@ -5,18 +5,27 @@
     <meta charSet="utf-8" />
     <title>Yagss</title>
     <link rel="canonical" href="https://esonderegger.github.io/yagss/index.html" />
-    <link rel="icon" href="/favicon.png" />
+    <link rel="icon" href="favicon-32x32.png" />
     <meta name="description" content="Yet another generator for static sites" />
     <meta name="robots" content="index, follow" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="yagss.24741e87.css" rel="stylesheet" />
+    <link href="yagss.f89c350e.css" rel="stylesheet" />
   </head>
 
   <body>
-    <header>
-      <h1>Yagss</h1>
-      <h2>Yet another generator for static sites</h2>
-    </header>
+    <section class="site-header">
+      <header>
+        <h1>Yagss</h1>
+        <h2>Yet another generator for static sites</h2>
+      </header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+          <li><a href="https://github.com/esonderegger/yagss">Source</a></li>
+        </ul>
+      </nav>
+    </section>
     <main>
       <p><a href="https://github.com/esonderegger/yagss">Yagss</a> (yet another generator for static sites) is a <a href="https://davidwalsh.name/introduction-static-site-generators">static site generator</a>. That means it takes a folder full of files in formats that are (hopefully) easier to write and maintain than HTML, CSS, and JS and converts (transpiles) them into a folder full of HTML, CSS, and JS files that can be hosted on a web server, without the need for a dynamic back-end like <a href="https://wordpress.org/">WordPress</a>, <a href="https://www.djangoproject.com/">Django</a>, or <a href="https://rubyonrails.org/">Rails</a>.</p>
       <p>A few design beliefs drive the feature set Yagss aims to provide.</p>
@@ -45,15 +54,15 @@ npm install
 npm run start</code></pre>
       <h2 id="configuration-options">Configuration options</h2>
       <ul>
-        <li><code>site_url</code>: The base url where this site will be hosted. Necessary for <code>meta</code> tags like <code>canonical</code> and social sharing tags.</li>
+        <li><code>siteUrl</code>: The base url where this site will be hosted. Necessary for <code>meta</code> tags like <code>canonical</code> and social sharing tags.</li>
         <li><code>title</code>: A default value for page title if none is provided</li>
         <li><code>description</code>: A default value for page description if none is provided</li>
-        <li><code>src_dir</code>: location for site content pre-transpilation and pre-transcoding</li>
-        <li><code>dest_dir</code>: location for converted site assets, used for local development and for deployment</li>
-        <li><code>templates_dir</code>: location for “server-side” templates,</li>
-        <li><code>cache_dir</code>: location for storing files to make site-building faster</li>
-        <li><code>scss_file</code>: It is recommended to have a single file used for site-wide global styles.</li>
-        <li><code>img_sizes</code>: array of integers for image widths jpg source files should be converted to</li>
+        <li><code>srcDir</code>: location for site content pre-transpilation and pre-transcoding</li>
+        <li><code>destDir</code>: location for converted site assets, used for local development and for deployment</li>
+        <li><code>templatesDir</code>: location for “server-side” templates,</li>
+        <li><code>cacheDir</code>: location for storing files to make site-building faster</li>
+        <li><code>scssFile</code>: It is recommended to have a single file used for site-wide global styles.</li>
+        <li><code>imgSizes</code>: array of integers for image widths jpg source files should be converted to</li>
       </ul>
     </main>
   </body>

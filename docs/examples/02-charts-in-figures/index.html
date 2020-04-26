@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charSet="utf-8" />
+    <title>Charts in figures</title>
+    <link rel="canonical" href="https://esonderegger.github.io/yagss/examples/02-charts-in-figures/index.html" />
+    <link rel="icon" href="../../favicon-32x32.png" />
+    <meta name="description" content="A short demo of an article featuring charts made with recharts" />
+    <meta name="robots" content="index, follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../../yagss.f89c350e.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <section class="site-header">
+      <header>
+        <h1>Yagss</h1>
+        <h2>Yet another generator for static sites</h2>
+      </header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+          <li><a href="https://github.com/esonderegger/yagss">Source</a></li>
+        </ul>
+      </nav>
+    </section>
+    <main>
+      <article class="article">
+        <header>
+          <h1>Charts in figures</h1>
+          <p>A short demo of an article featuring charts made with recharts</p>
+        </header>
+        <section>
+          <p>This is an example article showing how to include interactive charts using the <a href="http://recharts.org/en-US">recharts</a> library.</p>
+        </section>
+        <div id="linechart">
+          <figure>
+            <figcaption>Fig. 1. Simple Line Chart</figcaption>
+            <div class="recharts-responsive-container" style="width:100%;height:100%">
+              <div style="position:absolute;width:0;height:0;visibility:hidden;display:none"></div>
+            </div>
+          </figure>
+        </div>
+        <section>
+          <p>Each figure can be self-contained because each element can have its own call to <code>ReactDOM.hydrate</code>. In other words, this doesn’t need to be a “single page application” where there is one root element and every child is rendered by React. I prefer thinking of these as “single div applications.”</p>
+        </section>
+        <div id="piechart">
+          <figure>
+            <figcaption>Fig. 2. Simple Pie Chart</figcaption>
+            <div class="recharts-responsive-container" style="width:100%;height:100%">
+              <div style="position:absolute;width:0;height:0;visibility:hidden;display:none"></div>
+            </div>
+          </figure>
+        </div>
+        <section>
+          <p>Eventually we will want to migrate this example to something that makes charts that are usable prior to calling <code>hydrate</code>.</p>
+        </section>
+      </article>
+    </main>
+    <script src="/lodash.2e03a2d2.js"></script>
+    <script src="/core-js.e1edb952.js"></script>
+    <script src="/recharts.ad122274.js"></script>
+    <script src="/d3-array.df111c37.js"></script>
+    <script src="/d3-shape.ded6d294.js"></script>
+    <script src="/d3-scale.1d453f29.js"></script>
+    <script src="/d3-time.7c89220a.js"></script>
+    <script src="/d3-format.88b38f7a.js"></script>
+    <script src="/d3-interpolate.a081b982.js"></script>
+    <script src="/react-smooth.b0875d93.js"></script>
+    <script src="/react-transition-group.5782f1f2.js"></script>
+    <script src="/d3-collection.565856eb.js"></script>
+    <script src="/math-expression-evaluator.e74613df.js"></script>
+    <script src="/recharts-scale.13e0a7a7.js"></script>
+    <script src="/prop-types.8e6a2d5a.js"></script>
+    <script src="/dom-helpers.f4f44131.js"></script>
+    <script src="/scheduler.119e3f35.js"></script>
+    <script src="/reduce-css-calc.9cee9dee.js"></script>
+    <script src="/react.864985e4.js"></script>
+    <script src="/react-resize-detector.e3c02e69.js"></script>
+    <script src="/react-dom.9ea3b65d.js"></script>
+    <script src="/d3-time-format.35ff2c53.js"></script>
+    <script src="/d3-color.9fea7bb5.js"></script>
+    <script src="/resize-observer-polyfill.8dccaae3.js"></script>
+    <script src="/reduce-function-call.1454e7f0.js"></script>
+    <script src="/react-lifecycles-compat.83ed868b.js"></script>
+    <script src="/raf.954c756c.js"></script>
+    <script src="/performance-now.0feeee48.js"></script>
+    <script src="/object-assign.69cd36ae.js"></script>
+    <script src="/lodash.throttle.992b6dab.js"></script>
+    <script src="/lodash.debounce.3e93ae79.js"></script>
+    <script src="/events.ebf71306.js"></script>
+    <script src="/decimal.js-light.60f9d6eb.js"></script>
+    <script src="/d3-path.937ee91b.js"></script>
+    <script src="/classnames.dc494c86.js"></script>
+    <script src="/balanced-match.da69aa17.js"></script>
+    <script src="/babel.4176f2fe.js"></script>
+    <script src="/231.ad15c114.js"></script>
+    <script src="/examples/02-charts-in-figures/index.html.6121a759.js"></script>
+  </body>
+
+</html>

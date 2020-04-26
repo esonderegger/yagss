@@ -14,18 +14,19 @@ const babelUtils = require('./src/babel_utils');
 const fileUtils = require('./src/file_utils');
 const imageUtils = require('./src/image_utils');
 const markdownUtils = require('./src/md_utils');
+const siteUtils = require('./src/site_utils');
 const webpackUtils = require('./src/webpack_utils');
 
 const defaultConfig = {
-  site_url: 'https://www.example.com',
+  siteUrl: 'https://www.example.com',
   title: 'Hello World!',
   description: 'This is your new site made with yagss',
-  src_dir: 'src',
-  dest_dir: 'public',
-  templates_dir: 'templates',
-  cache_dir: '.cache',
-  scss_file: 'scss/main.scss',
-  img_sizes: [
+  srcDir: 'src',
+  destDir: 'public',
+  templatesDir: 'templates',
+  cacheDir: '.cache',
+  scssFile: 'scss/main.scss',
+  imgSizes: [
     440,
     660,
     880,
@@ -38,14 +39,14 @@ const defaultConfig = {
 const configPath = path.resolve(process.cwd(), 'yagss-config.yaml');
 const configFromFile = yaml.parse(fs.readFileSync(configPath, 'utf8'));
 const config = Object.assign(defaultConfig, configFromFile);
-const srcDir = path.resolve(process.cwd(), config.src_dir);
-const destDir = path.resolve(process.cwd(), config.dest_dir);
-const templatesDir = path.resolve(process.cwd(), config.templates_dir);
-const cacheDir = path.resolve(process.cwd(), config.cache_dir);
-const scssPath = path.resolve(process.cwd(), config.scss_file);
+const srcDir = path.resolve(process.cwd(), config.srcDir);
+const destDir = path.resolve(process.cwd(), config.destDir);
+const templatesDir = path.resolve(process.cwd(), config.templatesDir);
+const cacheDir = path.resolve(process.cwd(), config.cacheDir);
+const scssPath = path.resolve(process.cwd(), config.scssFile);
 
 const parsedScssPath = path.parse(scssPath);
-config.css_file_relative = parsedScssPath.name;
+config.cssFileRelative = parsedScssPath.name;
 
 const docStrings = {
   html: '<!DOCTYPE html>',
@@ -77,7 +78,6 @@ function paginate(parsedList) {
     Object.keys(parsed).forEach((k) => {
       if (typeof parsed[k] === 'object' && parsed[k].directory) {
         noDirectories = false;
-        // const filterStr = path.resolve('/', parsed[k].directory);
         const filterStr = `/${parsed[k].directory}/`;
         const matches = parsedList.filter((item) => item.relativeURL.startsWith(filterStr));
         if (parsed[k].sortOn) {
@@ -150,7 +150,7 @@ function renderYagss() {
     const hashesPath = path.join(cacheDir, 'hashed-assets.json');
     let bigObj = {};
     fileUtils.readFilePromise(hashesPath, 'utf8').then((contents) => {
-      config.cssFile = JSON.parse(contents)[config.css_file_relative];
+      config.cssFile = JSON.parse(contents)[config.cssFileRelative];
       return fileUtils.globPromise(`${srcDir}/**/*.md`);
     })
       .then((matches) => {
@@ -160,6 +160,10 @@ function renderYagss() {
         return Promise.all(parsePromises);
       })
       .then((parsedListNoExif) => imageUtils.addExifData(parsedListNoExif, srcDir))
+      .then((parsedList) => {
+        const siteDataPath = path.join(cacheDir, 'siteData');
+        return siteUtils.writeImportableSiteData(parsedList, siteDataPath);
+      })
       .then((parsedList) => {
         bigObj = paginate(parsedList);
         const jsEntries = getJsEntries(bigObj);
@@ -190,7 +194,7 @@ async function scss() {
 
 function jpegVersusThumbnail(projectDir, srcFile, absSrcFile) {
   const relativePath = absSrcFile.slice(srcDir.length, -4);
-  const smallestVersion = `${relativePath}-${config.img_sizes[0]}px.jpg`;
+  const smallestVersion = `${relativePath}-${config.imgSizes[0]}px.jpg`;
   return path.join(destDir, smallestVersion);
 }
 
@@ -198,7 +202,7 @@ function jpegs(done) {
   gulp.src(`${srcDir}/**/*.jpg`)
     .pipe(newy(jpegVersusThumbnail))
     .pipe(responsive({
-      '**/*.jpg': config.img_sizes.map((size) => ({
+      '**/*.jpg': config.imgSizes.map((size) => ({
         width: size,
         rename: { suffix: `-${size}px` },
         withoutEnlargement: false,
@@ -221,7 +225,8 @@ function jpegs(done) {
 function localServer(done) {
   connect.server({
     root: destDir,
-    livereload: false,
+    port: process.env.PORT || 8000,
+    livereload: Boolean(process.env.LIVE_RELOAD),
   });
   process.on('SIGINT', () => {
     connect.serverClose();
@@ -231,7 +236,7 @@ function localServer(done) {
 
 function clean() {
   return del([
-    `${path.resolve(process.cwd(), config.cache_dir)}/**/*`,
+    `${path.resolve(process.cwd(), config.cacheDir)}/**/*`,
     `${destDir}/**/*`,
   ]);
 }

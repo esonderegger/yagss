@@ -28,7 +28,7 @@ function writeFilePromise(filePath, data, options) {
                 if (err3) {
                   reject(err3);
                 } else {
-                  resolve();
+                  resolve(data);
                 }
               });
             }

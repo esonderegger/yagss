@@ -3,6 +3,7 @@ const path = require('path');
 const sharp = require('sharp');
 const exifReader = require('exif-reader');
 const iptcReader = require('iptc-reader');
+const fileUtils = require('./file_utils');
 
 function imageSizePromise(filePath) {
   return new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ function metadataPromise(filePath) {
           }
           return Object.assign(acc, pair);
         }, {});
+        combined.filename = path.parse(filePath).name;
         try {
           combined.exif = exifReader(meta.exif);
         } catch (err) {
@@ -46,38 +48,20 @@ function metadataPromise(filePath) {
 }
 
 function addExifData(parsedList, baseDir) {
-  return new Promise((resolve) => {
-    const exifPromises = [];
-    parsedList.forEach((item) => {
-      if (item.images) {
-        item.images.forEach((image) => {
-          const imgDir = path.join(baseDir, item.relativeDir, image.filename);
-          const filePath = `${imgDir}.jpg`;
-          // const addExif = new Promise((resv) => {
-          //   exifPromise(filePath).then((exifData) => {
-          //     /* eslint-disable */
-          //     image.exif = exifData;
-          //     /* eslint-enable */
-          //     resv();
-          //   });
-          // });
-          const addSize = new Promise((resv) => {
-            imageSizePromise(filePath).then((dimensions) => {
-              /* eslint-disable */
-              image.size = dimensions;
-              /* eslint-enable */
-              resv();
-            });
-          });
-          // exifPromises.push(addExif);
-          exifPromises.push(addSize);
-        });
-      }
-    });
-    Promise.all(exifPromises).then(() => {
-      resolve(parsedList);
+  const exifPromises = parsedList.map((item) => {
+    const jpgGlobPattern = `${path.join(baseDir, item.relativeDir)}/*.jpg`;
+    return new Promise((resolve) => {
+      fileUtils.globPromise(jpgGlobPattern).then((jpgMatches) => {
+        const metaPromises = jpgMatches.map(metadataPromise);
+        return Promise.all(metaPromises);
+      }).then((metaEntries) => {
+        // eslint-disable-next-line no-param-reassign
+        item.images = metaEntries;
+        resolve(item);
+      });
     });
   });
+  return Promise.all(exifPromises);
 }
 
 function addMetadata(parsedList, baseDir) {

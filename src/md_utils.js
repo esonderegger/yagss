@@ -40,7 +40,7 @@ function parseMdPromise(filePath, baseDir, config) {
         parsed.slug = parsedPath.name;
         parsed.relativeDir = relativeDir;
         parsed.relativeURL = `${relativeDir}/${parsedPath.name}.${parsed.extension}`;
-        parsed.url = `${parsed.site_url}${parsed.relativeURL}`;
+        parsed.url = `${parsed.siteUrl}${parsed.relativeURL}`;
         resolve(parsed);
       } catch (err) {
         reject(err);

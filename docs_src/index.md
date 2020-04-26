@@ -37,12 +37,12 @@ npm run start
 
 ## Configuration options
 
-- `site_url`: The base url where this site will be hosted. Necessary for `meta` tags like `canonical` and social sharing tags.
+- `siteUrl`: The base url where this site will be hosted. Necessary for `meta` tags like `canonical` and social sharing tags.
 - `title`: A default value for page title if none is provided
 - `description`: A default value for page description if none is provided
-- `src_dir`: location for site content pre-transpilation and pre-transcoding
-- `dest_dir`: location for converted site assets, used for local development and for deployment
-- `templates_dir`: location for "server-side" templates,
-- `cache_dir`: location for storing files to make site-building faster
-- `scss_file`: It is recommended to have a single file used for site-wide global styles.
-- `img_sizes`: array of integers for image widths jpg source files should be converted to
+- `srcDir`: location for site content pre-transpilation and pre-transcoding
+- `destDir`: location for converted site assets, used for local development and for deployment
+- `templatesDir`: location for "server-side" templates,
+- `cacheDir`: location for storing files to make site-building faster
+- `scssFile`: It is recommended to have a single file used for site-wide global styles.
+- `imgSizes`: array of integers for image widths jpg source files should be converted to
