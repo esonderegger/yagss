@@ -1,7 +1,7 @@
 const mdUtils = require('./md_utils');
 
 const dummyConfig = {
-  site_url: 'https://example.rpy.xyz',
+  siteUrl: 'https://example.rpy.xyz',
   title: 'Example Site',
   description: 'This is a deafult that would get overwritten',
 };

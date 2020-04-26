@@ -1,7 +1,7 @@
-site_url: https://esonderegger.github.io/yagss
+siteUrl: https://esonderegger.github.io/yagss
 title: Yagss
 description: Yet another generator for static sites
-src_dir: docs_src
-dest_dir: docs
-templates_dir: docs_templates
-scss_file: docs_scss/yagss.scss
+srcDir: docs_src
+destDir: docs
+templatesDir: docs_templates
+scssFile: docs_scss/yagss.scss

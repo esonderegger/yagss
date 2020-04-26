@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SiteHeader from './SiteHeader.jsx';
 
 const simple = (props) => {
   const {
-    title, url, description, cssFile, content
+    title, url, description, cssFile, content,
   } = props;
   return (
     <html lang="en">
@@ -11,17 +12,14 @@ const simple = (props) => {
         <meta charSet="utf-8" />
         <title>{title}</title>
         <link rel="canonical" href={url} />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="favicon-32x32.png" />
         <meta name="description" content={description} />
         <meta name="robots" content="index, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link href={cssFile} rel="stylesheet" />
       </head>
       <body>
-        <header>
-          <h1>{title}</h1>
-          <h2>{description}</h2>
-        </header>
+        <SiteHeader />
         <main dangerouslySetInnerHTML={{ __html: content }} />
       </body>
     </html>

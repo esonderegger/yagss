@@ -1,4 +1,5 @@
 {
+  "ignorePatterns": ["node_modules/", "docs/"],
   "extends": [
     "airbnb",
     "plugin:jest/all"
