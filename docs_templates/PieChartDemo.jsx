@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+/* eslint-disable import/no-extraneous-dependencies */
 import {
   ResponsiveContainer, PieChart, Pie, Legend, Tooltip, Cell,
 } from 'recharts';
+/* eslint-enable import/no-extraneous-dependencies */
 
 const COLORS = ['#b197fc', '#66d9e8', '#91a7ff', '#ffc078'];
 

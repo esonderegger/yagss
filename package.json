@@ -40,13 +40,12 @@
     "gulp-responsive": "3.0.1",
     "image-size": "^0.8.3",
     "iptc-reader": "^1.0.0",
-    "marked": "^0.8.2",
+    "marked": "^1.0.0",
     "node-sass": "^4.14.0",
     "pretty": "^2.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "recharts": "^1.8.5",
     "section-matter": "^1.0.0",
     "sharp": "^0.25.2",
     "through2": "^3.0.1",
@@ -60,6 +59,7 @@
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
-    "jest": "^25.4.0"
+    "jest": "^25.4.0",
+    "recharts": "^1.8.5"
   }
 }

@@ -8,6 +8,8 @@ const base = (props) => {
   } = props;
   const amountNested = (relativeDir.match(/\//g) || []).length;
   const relativePrefix = '../'.repeat(amountNested);
+  const jsBundles = bundledJS || [];
+  const relativeJS = jsBundles.map((js) => `${relativePrefix}${js.slice(1)}`);
   return (
     <html lang="en">
       <head>
@@ -24,7 +26,7 @@ const base = (props) => {
         <SiteHeader />
         <main>{children}</main>
         {
-          bundledJS ? bundledJS.map((s) => <script src={s} key={s} />) : null
+          bundledJS ? relativeJS.map((s) => <script src={s} key={s} />) : null
         }
       </body>
     </html>
