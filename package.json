@@ -40,7 +40,7 @@
     "gulp-responsive": "3.0.1",
     "image-size": "^0.8.3",
     "iptc-reader": "^1.0.0",
-    "marked": "^0.8.2",
+    "marked": "^1.0.0",
     "node-sass": "^4.14.0",
     "pretty": "^2.0.0",
     "prop-types": "^15.7.2",
