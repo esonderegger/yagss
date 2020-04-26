@@ -4,7 +4,7 @@ import SiteHeader from './SiteHeader.jsx';
 
 const simple = (props) => {
   const {
-    title, url, description, cssFile, content,
+    title, url, description, cssFile, content, relativeDir,
   } = props;
   return (
     <html lang="en">
@@ -19,7 +19,7 @@ const simple = (props) => {
         <link href={cssFile} rel="stylesheet" />
       </head>
       <body>
-        <SiteHeader />
+        <SiteHeader relativeDir={relativeDir} />
         <main dangerouslySetInnerHTML={{ __html: content }} />
       </body>
     </html>
@@ -31,6 +31,7 @@ simple.propTypes = {
   url: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   cssFile: PropTypes.string.isRequired,
+  relativeDir: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
 };
 

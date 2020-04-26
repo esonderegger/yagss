@@ -7,7 +7,7 @@ const article = (props) => {
     subTemplate, relativeURL, title, description, sections,
   } = props;
   const titleNode = subTemplate ? (
-    <h1><a href={relativeURL}>{title}</a></h1>
+    <h1><a href={relativeURL.slice(1)}>{title}</a></h1>
   ) : (
     <h1>{title}</h1>
   );

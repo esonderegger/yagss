@@ -23,7 +23,7 @@ const base = (props) => {
         <link href={`${relativePrefix}${cssFile}`} rel="stylesheet" />
       </head>
       <body>
-        <SiteHeader />
+        <SiteHeader relativeDir={relativeDir} />
         <main>{children}</main>
         {
           bundledJS ? relativeJS.map((s) => <script src={s} key={s} />) : null
