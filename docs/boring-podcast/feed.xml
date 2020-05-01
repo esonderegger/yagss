@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <language>en-us</language>
+    <title>The Boring Podcast</title>
+    <link>https://esonderegger.github.io/yagss/boring-podcast/index.html</link>
+    <copyright>Copyright 2020 Evan Sonderegger</copyright>
+    <description>The world&#x27;s most boring podcast</description>
+    <docs>https://cyber.harvard.edu/rss/rss.html</docs>
+    <itunes:summary>The world&#x27;s most boring podcast</itunes:summary>
+    <image>
+      <url>https://esonderegger.github.io/yagss/boring-podcast/logo.png</url>
+      <title>The Boring Podcast</title>
+      <link>https://esonderegger.github.io/yagss/boring-podcast/index.html</link>
+    </image>
+    <itunes:image href="https://esonderegger.github.io/yagss/boring-podcast/logo.png"></itunes:image>
+    <itunes:author>Evan Sonderegger</itunes:author>
+    <itunes:owner>
+      <itunes:name>Evan Sonderegger</itunes:name>
+      <itunes:email>evan@rpy.xyz</itunes:email>
+    </itunes:owner>
+    <itunes:explicit>No</itunes:explicit>
+    <lastBuildDate>Sun, 24 May 2020 17:10:54 -0400</lastBuildDate>
+    <atom:link href="https://esonderegger.github.io/yagss/boring-podcast/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <itunes:category text="Sports">
+      <itunes:category text="Golf"></itunes:category>
+    </itunes:category>
+    <itunes:category text="True Crime"></itunes:category>
+    <item>
+      <guid isPermalink="true">https://esonderegger.github.io/yagss/boring-podcast/episodes/02-another-one/BoringPodcast2.mp3</guid>
+      <link>https://esonderegger.github.io/yagss/boring-podcast/episodes/02-another-one/index.html</link>
+      <title>The Boring Podcast - Episode 2 - More</title>
+      <description>This is really just test audio</description>
+      <itunes:summary>This is really just test audio</itunes:summary>
+      <pubDate>Sat, 23 May 2020 16:05:00 -0400</pubDate>
+      <itunes:duration>7.597958</itunes:duration>
+      <enclosure length="183844" url="https://esonderegger.github.io/yagss/boring-podcast/episodes/02-another-one/BoringPodcast2.mp3" type="audio/mpeg"></enclosure>
+    </item>
+    <item>
+      <guid isPermalink="true">https://esonderegger.github.io/yagss/boring-podcast/episodes/01-intro/BoringPodcast1.mp3</guid>
+      <link>https://esonderegger.github.io/yagss/boring-podcast/episodes/01-intro/index.html</link>
+      <title>The Boring Podcast - Episode 1 - Welcome</title>
+      <description>In which we introduce The Boring Podcast</description>
+      <itunes:summary>In which we introduce The Boring Podcast</itunes:summary>
+      <pubDate>Thu, 21 May 2020 12:15:00 -0400</pubDate>
+      <itunes:duration>8.818521</itunes:duration>
+      <enclosure length="213215" url="https://esonderegger.github.io/yagss/boring-podcast/episodes/01-intro/BoringPodcast1.mp3" type="audio/mpeg"></enclosure>
+    </item>
+  </channel>
+</rss>

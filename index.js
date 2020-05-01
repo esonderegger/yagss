@@ -14,6 +14,7 @@ const babelUtils = require('./src/babel_utils');
 const fileUtils = require('./src/file_utils');
 const imageUtils = require('./src/image_utils');
 const markdownUtils = require('./src/md_utils');
+const mediaUtils = require('./src/media_utils');
 const siteUtils = require('./src/site_utils');
 const webpackUtils = require('./src/webpack_utils');
 
@@ -131,6 +132,12 @@ function getJsEntries(bigObj) {
   return entriesObj;
 }
 
+function replaceXmlElements(input) {
+  let output = input.replace(/<xml-link>/g, '<link>');
+  output = output.replace(/<\/xml-link>/g, '</link>');
+  return output;
+}
+
 function writeMdFile(yagssObj, destDirectory) {
   log(`${yagssObj.relativeDir}/${yagssObj.slug}.md => ${yagssObj.relativeURL}`);
   const templatePath = `${cacheDir}/templates/${yagssObj.template}.jsx`;
@@ -139,7 +146,10 @@ function writeMdFile(yagssObj, destDirectory) {
   const Template = require(templatePath);
   /* eslint-enable */
   const element = React.createElement(Template.default, yagssObj);
-  const htmlString = ReactDOMServer.renderToStaticMarkup(element);
+  let htmlString = ReactDOMServer.renderToStaticMarkup(element);
+  if (yagssObj.extension === 'xml') {
+    htmlString = replaceXmlElements(htmlString);
+  }
   const prettified = pretty(`${docStrings[yagssObj.extension]}\n${htmlString}`);
   const destPath = path.join(destDirectory, yagssObj.relativeURL);
   return fileUtils.writeFilePromise(destPath, prettified);
@@ -160,6 +170,7 @@ function renderYagss() {
         return Promise.all(parsePromises);
       })
       .then((parsedListNoExif) => imageUtils.addExifData(parsedListNoExif, srcDir))
+      .then((parsedListNoAudio) => mediaUtils.addAudioData(parsedListNoAudio, srcDir, destDir))
       .then((parsedList) => {
         const siteDataPath = path.join(cacheDir, 'siteData');
         return siteUtils.writeImportableSiteData(parsedList, siteDataPath);
@@ -182,7 +193,7 @@ function renderYagss() {
 }
 
 function nonYagss() {
-  return gulp.src(`${srcDir}/**/*.!(md|js|jsx|jpg)`)
+  return gulp.src(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3)`)
     .pipe(gulp.dest(destDir));
 }
 
@@ -222,6 +233,17 @@ function jpegs(done) {
   done();
 }
 
+async function encodeAudio() {
+  const matches = await fileUtils.globPromise(`${srcDir}/**/*.{wav,mp3}`);
+  const encodes = matches.map((match) => {
+    const relativePath = match.slice(srcDir.length);
+    const encodeDest = path.dirname(`${destDir}${relativePath}`);
+    return mediaUtils.r128encode(match, encodeDest);
+  });
+  const outputs = await Promise.all(encodes);
+  return outputs;
+}
+
 function localServer(done) {
   connect.server({
     root: destDir,
@@ -254,6 +276,7 @@ const prerequisites = gulp.series([
   gulp.parallel([
     templates,
     scss,
+    encodeAudio,
   ]),
 ]);
 

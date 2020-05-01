@@ -1,10 +1,14 @@
+.cache/
+binaries/
 docs/
 docs_scss/
 docs_src/
 docs_templates/
+test/encodes/
+test_fixtures/
 yagss-config.yaml
-.cache/
 .eslintrc.json
 .gitignore
 .npmignore
 .travis.yml
+jest.config.js
