@@ -60,5 +60,10 @@ typings/
 # next.js build output
 .next
 
+# ffmpeg, ffprobe, etc.
+binaries
+
+test_encodes
+
 # yagss cache
 .cache
