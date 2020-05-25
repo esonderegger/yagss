@@ -1,5 +1,6 @@
 ---
 template: Landing
+alternate: feed.xml
 posts:
   directory: boring-podcast/episodes
   reversed: true

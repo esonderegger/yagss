@@ -4,7 +4,7 @@ import Base from './Base.jsx';
 
 const podcastEpisode = (props) => {
   const {
-    subTemplate, relativeURL, title, description, content,
+    subTemplate, relativeURL, title, description, content, audio,
   } = props;
   const titleNode = subTemplate ? (
     <h1><a href={relativeURL.slice(1)}>{title}</a></h1>
@@ -21,6 +21,9 @@ const podcastEpisode = (props) => {
           ) : null
         }
       </header>
+      <section>
+        <audio src={audio[0].name} />
+      </section>
       <section dangerouslySetInnerHTML={{__html: content}} />
     </article>
   );
@@ -40,6 +43,11 @@ podcastEpisode.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
+  audio: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 podcastEpisode.defaultProps = {

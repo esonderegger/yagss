@@ -4,7 +4,7 @@ import SiteHeader from './SiteHeader.jsx';
 
 const base = (props) => {
   const {
-    title, url, description, cssFile, children, bundledJS, relativeDir,
+    title, url, description, cssFile, children, bundledJS, relativeDir, alternate,
   } = props;
   const amountNested = (relativeDir.match(/\//g) || []).length;
   const relativePrefix = '../'.repeat(amountNested);
@@ -20,6 +20,7 @@ const base = (props) => {
         <meta name="description" content={description} />
         <meta name="robots" content="index, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        { alternate && <link rel="alternate" type="application/rss+xml" href={alternate} />}
         <link href={`${relativePrefix}${cssFile}`} rel="stylesheet" />
       </head>
       <body>
@@ -39,12 +40,14 @@ base.propTypes = {
   description: PropTypes.string.isRequired,
   cssFile: PropTypes.string.isRequired,
   relativeDir: PropTypes.string.isRequired,
+  alternate: PropTypes.string,
   children: PropTypes.node,
   bundledJS: PropTypes.arrayOf(PropTypes.string),
 };
 
 base.defaultProps = {
   children: null,
+  alternate: null,
   bundledJS: [],
 };
 
