@@ -9,7 +9,7 @@
     <meta name="description" content="Yet another generator for static sites" />
     <meta name="robots" content="index, follow" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="yagss.f89c350e.css" rel="stylesheet" />
+    <link href="yagss.6ff8ab7b.css" rel="stylesheet" />
   </head>
 
   <body>
@@ -93,46 +93,116 @@
           <p>Eventually we will want to migrate this example to something that makes charts that are usable prior to calling <code>hydrate</code>.</p>
         </section>
       </article>
+      <article class="article">
+        <header>
+          <h1><a href="examples/03-article-with-video/index.html">Video Clip</a></h1>
+          <p>A short demo of a video embedded in an article</p>
+        </header>
+        <section>
+          <p>This is an example article showing how to include videos encoded as HLS.</p>
+        </section>
+        <div id="lolo">
+          <div class="video-instance">
+            <div class="video-player"><video class="video-element"></video>
+              <div class="video-controls"><button type="button" class="video-control-button" disabled="" title="Play"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path>
+                  </svg></button>
+                <div class="video-volume"><button type="button" class="video-control-button" title="Mute"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                      <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M5.889 16H2a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h3.889l5.294-4.332a.5.5 0 0 1 .817.387v15.89a.5.5 0 0 1-.817.387L5.89 16zm13.517 4.134l-1.416-1.416A8.978 8.978 0 0 0 21 12a8.982 8.982 0 0 0-3.304-6.968l1.42-1.42A10.976 10.976 0 0 1 23 12c0 3.223-1.386 6.122-3.594 8.134zm-3.543-3.543l-1.422-1.422A3.993 3.993 0 0 0 16 12c0-1.43-.75-2.685-1.88-3.392l1.439-1.439A5.991 5.991 0 0 1 18 12c0 1.842-.83 3.49-2.137 4.591z"></path>
+                      </g>
+                    </svg></button>
+                  <div class="video-volume-slider">
+                    <div style="cursor:pointer;height:13px;padding-left:6px;padding-right:6px;text-align:left" value="100">
+                      <div style="overflow-y:hidden;height:100%;width:100%">
+                        <div style="margin-top:4px;width:100%;height:5px;overflow:hidden;background-color:#666;border-radius:9999px">
+                          <div style="pointer-events:none;height:100%;transform-origin:left;transform:scaleX(0);background-color:#aaa;border-radius:9999px"></div>
+                        </div>
+                      </div>
+                      <div style="position:absolute;margin-top:-12.5px;margin-left:-6px;width:12px;height:12px;border-radius:25px;transform:translateX(NaNpx);background-color:#fff;display:inline"></div>
+                    </div>
+                  </div>
+                </div><button type="button" class="video-control-button" title="Hide Closed Captions"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fill="none" d="M0 0H24V24H0z"></path>
+                      <path d="M21 3c.552 0 1 .448 1 1v16c0 .552-.448 1-1 1H3c-.552 0-1-.448-1-1V4c0-.552.448-1 1-1h18zm-1 2H4v14h16V5zM9 8c1.105 0 2.105.448 2.829 1.173l-1.414 1.414C10.053 10.224 9.553 10 9 10c-1.105 0-2 .895-2 2s.895 2 2 2c.553 0 1.053-.224 1.414-.586l1.414 1.414C11.104 15.552 10.104 16 9 16c-2.208 0-4-1.792-4-4s1.792-4 4-4zm7 0c1.105 0 2.105.448 2.829 1.173l-1.414 1.414C17.053 10.224 16.553 10 16 10c-1.105 0-2 .895-2 2s.895 2 2 2c.552 0 1.052-.224 1.414-.586l1.414 1.414C18.104 15.552 17.104 16 16 16c-2.208 0-4-1.792-4-4s1.792-4 4-4z"></path>
+                    </g>
+                  </svg></button>
+                <div class="video-time">0:00</div>
+                <div class="video-slider">
+                  <div style="cursor:pointer;height:13px;padding-left:6px;padding-right:6px;text-align:left" value="0">
+                    <div style="overflow-y:hidden;height:100%;width:100%">
+                      <div style="margin-top:4px;width:100%;height:5px;overflow:hidden;background-color:#666;border-radius:9999px">
+                        <div style="pointer-events:none;height:100%;transform-origin:left;transform:scaleX(0);background-color:#aaa;border-radius:9999px"></div>
+                      </div>
+                    </div>
+                    <div style="position:absolute;margin-top:-12.5px;margin-left:-6px;width:12px;height:12px;border-radius:25px;transform:translateX(NaNpx);background-color:#fff;display:inline"></div>
+                  </div>
+                </div>
+                <div class="video-time">1:00</div><button type="button" class="video-control-button" disabled="" title="Enter Picture-in-Picture"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path fill-rule="nonzero" d="M21 3a1 1 0 0 1 1 1v7h-2V5H4v14h6v2H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h18zm0 10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h8zm-1 2h-6v4h6v-4zM6.707 6.293l2.25 2.25L11 6.5V12H5.5l2.043-2.043-2.25-2.25 1.414-1.414z"></path>
+                    </g>
+                  </svg></button><button type="button" class="video-control-button" title="Enter Full-Screen"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z"></path>
+                    </g>
+                  </svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <section>
+          <p>Each video is its own instance of a React-based video player.</p>
+        </section>
+      </article>
     </main>
-    <script src="lodash.62ad3a77.js"></script>
-    <script src="core-js.d9252c06.js"></script>
-    <script src="recharts.75123b74.js"></script>
-    <script src="d3-array.420e0527.js"></script>
-    <script src="d3-shape.bcebd13d.js"></script>
-    <script src="d3-scale.34727683.js"></script>
-    <script src="d3-time.e431b10c.js"></script>
-    <script src="d3-format.8a3f214d.js"></script>
-    <script src="d3-interpolate.b13739b5.js"></script>
-    <script src="react-smooth.d68c65aa.js"></script>
-    <script src="react-transition-group.c51c9988.js"></script>
-    <script src="d3-collection.6931bd40.js"></script>
-    <script src="math-expression-evaluator.fdda5540.js"></script>
-    <script src="recharts-scale.588bbcdb.js"></script>
-    <script src="prop-types.20aae310.js"></script>
-    <script src="dom-helpers.d5181c8c.js"></script>
-    <script src="scheduler.eeb5b2a0.js"></script>
-    <script src="reduce-css-calc.fd34c145.js"></script>
-    <script src="react.83114f7f.js"></script>
-    <script src="react-resize-detector.171ae825.js"></script>
-    <script src="react-dom.315e6af3.js"></script>
-    <script src="d3-time-format.fa8e8ade.js"></script>
-    <script src="d3-color.e85a6fdc.js"></script>
-    <script src="resize-observer-polyfill.d9af4799.js"></script>
-    <script src="reduce-function-call.ffdd2e6d.js"></script>
-    <script src="react-lifecycles-compat.0bd9c4e3.js"></script>
-    <script src="raf.c3092a68.js"></script>
-    <script src="performance-now.01244fa0.js"></script>
-    <script src="object-assign.e9e432d5.js"></script>
-    <script src="lodash.throttle.7e145e55.js"></script>
-    <script src="lodash.debounce.3a3b1926.js"></script>
-    <script src="events.3459fd7f.js"></script>
-    <script src="decimal.js-light.d8703b5b.js"></script>
-    <script src="d3-path.4c8d119c.js"></script>
-    <script src="classnames.d51f1f97.js"></script>
-    <script src="balanced-match.a2ce9f23.js"></script>
-    <script src="babel.e3c4d492.js"></script>
-    <script src="231.2a3ddb02.js"></script>
-    <script src="examples.html.b408bd6d.js"></script>
+    <script src="react-dom.2666b4e9.js"></script>
+    <script src="react.b76f9400.js"></script>
+    <script src="scheduler.4d60d5db.js"></script>
+    <script src="prop-types.42430e67.js"></script>
+    <script src="object-assign.47f9dabb.js"></script>
+    <script src="react-icons.857c0f5e.js"></script>
+    <script src="hls.js.e6fd7e72.js"></script>
+    <script src="recharts.d8445c37.js"></script>
+    <script src="lodash.c4118cc4.js"></script>
+    <script src="decimal.js-light.b91a3f8c.js"></script>
+    <script src="react-transition-group.98408033.js"></script>
+    <script src="react-smooth.1125773a.js"></script>
+    <script src="resize-observer-polyfill.7d9486f2.js"></script>
+    <script src="core-js.c1c80b78.js"></script>
+    <script src="d3-scale.cd0e8e5f.js"></script>
+    <script src="d3-shape.d54687a9.js"></script>
+    <script src="recharts-scale.5b7c237d.js"></script>
+    <script src="math-expression-evaluator.6c941890.js"></script>
+    <script src="d3-time-format.ea31e0eb.js"></script>
+    <script src="d3-array.7027115f.js"></script>
+    <script src="events.e99c30da.js"></script>
+    <script src="lodash.throttle.ecaf1788.js"></script>
+    <script src="d3-format.809db632.js"></script>
+    <script src="d3-color.a8215149.js"></script>
+    <script src="lodash.debounce.512da3aa.js"></script>
+    <script src="d3-time.c93fe91e.js"></script>
+    <script src="react-slider-simple.72dde036.js"></script>
+    <script src="d3-interpolate.be7171ad.js"></script>
+    <script src="react-lifecycles-compat.02995e1d.js"></script>
+    <script src="react-resize-detector.05ada3da.js"></script>
+    <script src="d3-collection.7aa93d99.js"></script>
+    <script src="reduce-css-calc.251ccd09.js"></script>
+    <script src="d3-path.4c82318f.js"></script>
+    <script src="reduce-function-call.3087eb80.js"></script>
+    <script src="raf.c82a1969.js"></script>
+    <script src="dom-helpers.12313eb8.js"></script>
+    <script src="classnames.3149d768.js"></script>
+    <script src="balanced-match.f09854fc.js"></script>
+    <script src="performance-now.8cfe219a.js"></script>
+    <script src="babel.b14f12e7.js"></script>
+    <script src="476.212c0cff.js"></script>
+    <script src="324.b67f6d04.js"></script>
+    <script src="examples.html.c5759cd3.js"></script>
   </body>
 
 </html>

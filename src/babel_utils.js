@@ -2,7 +2,6 @@ const babel = require('@babel/core');
 const log = require('fancy-log');
 const fileUtils = require('./file_utils');
 
-
 function transpileTemplate(srcPath, destPath) {
   return new Promise((resolve, reject) => {
     const babelOptions = {

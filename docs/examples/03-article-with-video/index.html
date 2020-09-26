@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charSet="utf-8" />
+    <title>Video Clip</title>
+    <link rel="canonical" href="https://esonderegger.github.io/yagss/examples/03-article-with-video/index.html" />
+    <link rel="icon" href="../../favicon-32x32.png" />
+    <meta name="description" content="A short demo of a video embedded in an article" />
+    <meta name="robots" content="index, follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="../../yagss.6ff8ab7b.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <section class="site-header">
+      <header>
+        <h1>Yagss</h1>
+        <h2>Yet another generator for static sites</h2>
+      </header>
+      <nav>
+        <ul>
+          <li><a href="../../index.html">Home</a></li>
+          <li><a href="../../examples.html">Examples</a></li>
+          <li><a href="https://github.com/esonderegger/yagss">Source</a></li>
+        </ul>
+      </nav>
+    </section>
+    <main>
+      <article class="article">
+        <header>
+          <h1>Video Clip</h1>
+          <p>A short demo of a video embedded in an article</p>
+        </header>
+        <section>
+          <p>This is an example article showing how to include videos encoded as HLS.</p>
+        </section>
+        <div id="lolo">
+          <div class="video-instance">
+            <div class="video-player"><video class="video-element"></video>
+              <div class="video-controls"><button type="button" class="video-control-button" disabled="" title="Play"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path>
+                  </svg></button>
+                <div class="video-volume"><button type="button" class="video-control-button" title="Mute"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                      <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M5.889 16H2a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h3.889l5.294-4.332a.5.5 0 0 1 .817.387v15.89a.5.5 0 0 1-.817.387L5.89 16zm13.517 4.134l-1.416-1.416A8.978 8.978 0 0 0 21 12a8.982 8.982 0 0 0-3.304-6.968l1.42-1.42A10.976 10.976 0 0 1 23 12c0 3.223-1.386 6.122-3.594 8.134zm-3.543-3.543l-1.422-1.422A3.993 3.993 0 0 0 16 12c0-1.43-.75-2.685-1.88-3.392l1.439-1.439A5.991 5.991 0 0 1 18 12c0 1.842-.83 3.49-2.137 4.591z"></path>
+                      </g>
+                    </svg></button>
+                  <div class="video-volume-slider">
+                    <div style="cursor:pointer;height:13px;padding-left:6px;padding-right:6px;text-align:left" value="100">
+                      <div style="overflow-y:hidden;height:100%;width:100%">
+                        <div style="margin-top:4px;width:100%;height:5px;overflow:hidden;background-color:#666;border-radius:9999px">
+                          <div style="pointer-events:none;height:100%;transform-origin:left;transform:scaleX(0);background-color:#aaa;border-radius:9999px"></div>
+                        </div>
+                      </div>
+                      <div style="position:absolute;margin-top:-12.5px;margin-left:-6px;width:12px;height:12px;border-radius:25px;transform:translateX(NaNpx);background-color:#fff;display:inline"></div>
+                    </div>
+                  </div>
+                </div><button type="button" class="video-control-button" title="Hide Closed Captions"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fill="none" d="M0 0H24V24H0z"></path>
+                      <path d="M21 3c.552 0 1 .448 1 1v16c0 .552-.448 1-1 1H3c-.552 0-1-.448-1-1V4c0-.552.448-1 1-1h18zm-1 2H4v14h16V5zM9 8c1.105 0 2.105.448 2.829 1.173l-1.414 1.414C10.053 10.224 9.553 10 9 10c-1.105 0-2 .895-2 2s.895 2 2 2c.553 0 1.053-.224 1.414-.586l1.414 1.414C11.104 15.552 10.104 16 9 16c-2.208 0-4-1.792-4-4s1.792-4 4-4zm7 0c1.105 0 2.105.448 2.829 1.173l-1.414 1.414C17.053 10.224 16.553 10 16 10c-1.105 0-2 .895-2 2s.895 2 2 2c.552 0 1.052-.224 1.414-.586l1.414 1.414C18.104 15.552 17.104 16 16 16c-2.208 0-4-1.792-4-4s1.792-4 4-4z"></path>
+                    </g>
+                  </svg></button>
+                <div class="video-time">0:00</div>
+                <div class="video-slider">
+                  <div style="cursor:pointer;height:13px;padding-left:6px;padding-right:6px;text-align:left" value="0">
+                    <div style="overflow-y:hidden;height:100%;width:100%">
+                      <div style="margin-top:4px;width:100%;height:5px;overflow:hidden;background-color:#666;border-radius:9999px">
+                        <div style="pointer-events:none;height:100%;transform-origin:left;transform:scaleX(0);background-color:#aaa;border-radius:9999px"></div>
+                      </div>
+                    </div>
+                    <div style="position:absolute;margin-top:-12.5px;margin-left:-6px;width:12px;height:12px;border-radius:25px;transform:translateX(NaNpx);background-color:#fff;display:inline"></div>
+                  </div>
+                </div>
+                <div class="video-time">1:00</div><button type="button" class="video-control-button" disabled="" title="Enter Picture-in-Picture"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path fill-rule="nonzero" d="M21 3a1 1 0 0 1 1 1v7h-2V5H4v14h6v2H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h18zm0 10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h8zm-1 2h-6v4h6v-4zM6.707 6.293l2.25 2.25L11 6.5V12H5.5l2.043-2.043-2.25-2.25 1.414-1.414z"></path>
+                    </g>
+                  </svg></button><button type="button" class="video-control-button" title="Enter Full-Screen"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path d="M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z"></path>
+                    </g>
+                  </svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <section>
+          <p>Each video is its own instance of a React-based video player.</p>
+        </section>
+      </article>
+    </main>
+    <script src="../../react-dom.2666b4e9.js"></script>
+    <script src="../../react.b76f9400.js"></script>
+    <script src="../../scheduler.4d60d5db.js"></script>
+    <script src="../../prop-types.42430e67.js"></script>
+    <script src="../../object-assign.47f9dabb.js"></script>
+    <script src="../../react-icons.857c0f5e.js"></script>
+    <script src="../../hls.js.e6fd7e72.js"></script>
+    <script src="../../react-slider-simple.72dde036.js"></script>
+    <script src="../../476.212c0cff.js"></script>
+    <script src="../../examples/03-article-with-video/index.html.e003b3d1.js"></script>
+  </body>
+
+</html>

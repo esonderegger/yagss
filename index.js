@@ -34,8 +34,8 @@ const defaultConfig = {
     1320,
     1760,
   ],
+  videoStreams: { height: [360, 540, 720, 900] },
 };
-
 
 const configPath = path.resolve(process.cwd(), 'yagss-config.yaml');
 const configFromFile = yaml.parse(fs.readFileSync(configPath, 'utf8'));
@@ -171,6 +171,7 @@ function renderYagss() {
       })
       .then((parsedListNoExif) => imageUtils.addExifData(parsedListNoExif, srcDir))
       .then((parsedListNoAudio) => mediaUtils.addAudioData(parsedListNoAudio, srcDir, destDir))
+      .then((parsedListNoVideo) => mediaUtils.addVideoData(parsedListNoVideo, srcDir))
       .then((parsedList) => {
         const siteDataPath = path.join(cacheDir, 'siteData');
         return siteUtils.writeImportableSiteData(parsedList, siteDataPath);
@@ -193,7 +194,7 @@ function renderYagss() {
 }
 
 function nonYagss() {
-  return gulp.src(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3)`)
+  return gulp.src(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`)
     .pipe(gulp.dest(destDir));
 }
 
@@ -244,6 +245,17 @@ async function encodeAudio() {
   return outputs;
 }
 
+async function encodeVideo() {
+  const matches = await fileUtils.globPromise(`${srcDir}/**/*.{mov,mp4}`);
+  const encodes = matches.map((match) => {
+    const relativePath = match.slice(srcDir.length);
+    const encodeDest = path.dirname(`${destDir}${relativePath}`);
+    return mediaUtils.videoEncode(match, config.videoStreams, encodeDest, log);
+  });
+  const outputs = await Promise.all(encodes);
+  return outputs;
+}
+
 function localServer(done) {
   connect.server({
     root: destDir,
@@ -277,6 +289,7 @@ const prerequisites = gulp.series([
     templates,
     scss,
     encodeAudio,
+    encodeVideo,
   ]),
 ]);
 
@@ -296,7 +309,7 @@ const buildFresh = gulp.series([clean, build]);
 function watchFiles() {
   gulp.watch(`${srcDir}/**/*.(md|js|jsx)`, renderYagss);
   gulp.watch(`${srcDir}/**/*.(jpg)`, jpegs);
-  gulp.watch(`${srcDir}/**/*.!(md|js|jsx|jpg)`, nonYagss);
+  gulp.watch(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`, nonYagss);
   gulp.watch(`${parsedScssPath.dir}/**/*`, html);
   gulp.watch(`${templatesDir}/**/*`, html);
 }
