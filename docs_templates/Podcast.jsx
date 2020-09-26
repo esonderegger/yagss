@@ -2,10 +2,10 @@ import React from 'react';
 import { format } from 'date-fns';
 
 const item = (props) => {
-  if (props.audio.length < 1) {
+  if (props.audios.length < 1) {
     return null;
   }
-  const audio = props.audio[0];
+  const audio = props.audios[0];
   const audioUrl = `${props.siteUrl}${props.relativeDir}/${audio.name}`;
   const children = [
     React.createElement('guid', { isPermalink: 'true' }, audioUrl),
