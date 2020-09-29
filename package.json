@@ -52,7 +52,7 @@
     "react-dom": "^16.13.1",
     "section-matter": "^1.0.0",
     "sharp": "^0.26.1",
-    "through2": "^3.0.1",
+    "through2": "^4.0.2",
     "webpack": "^5.0.0-beta.29",
     "yaml": "^1.10.0"
   },
