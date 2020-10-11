@@ -91,9 +91,22 @@ function addMetadata(parsedList, baseDir) {
   });
 }
 
+function createRenditions(src, dest, crops) {
+  const imgName = path.parse(src).name;
+  const sharpPromises = crops.reduce((acc, cur) => {
+    const cropRenditions = cur.renditions.map((rend) => {
+      const destPath = path.join(dest, `${imgName}-${rend}px.jpg`);
+      return sharp(src).resize(rend).jpeg({ quality: 65 }).toFile(destPath);
+    });
+    return acc.concat(cropRenditions);
+  }, []);
+  return Promise.all(sharpPromises);
+}
+
 module.exports = {
   imageSizePromise,
   metadataPromise,
   addExifData,
   addMetadata,
+  createRenditions,
 };

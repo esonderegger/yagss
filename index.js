@@ -1,14 +1,14 @@
-const connect = require('gulp-connect');
 const del = require('del');
 const fs = require('fs');
-const gulp = require('gulp');
+const http = require('http');
+const finalhandler = require('finalhandler');
+const serveStatic = require('serve-static');
+const chokidar = require('chokidar');
 const log = require('fancy-log');
-const newy = require('gulp-newy');
 const path = require('path');
 const pretty = require('pretty');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const responsive = require('gulp-responsive');
 const yaml = require('yaml');
 const babelUtils = require('./src/babel_utils');
 const fileUtils = require('./src/file_utils');
@@ -193,9 +193,13 @@ function renderYagss() {
   });
 }
 
-function nonYagss() {
-  return gulp.src(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`)
-    .pipe(gulp.dest(destDir));
+async function nonYagss() {
+  const matches = await fileUtils.globPromise(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`);
+  const copies = matches.map((match) => {
+    const destPath = `${destDir}${match.slice(srcDir.length)}`;
+    return fs.promises.copyFile(match, destPath);
+  });
+  await Promise.all(copies);
 }
 
 async function scss() {
@@ -204,34 +208,20 @@ async function scss() {
   return fileUtils.writeFilePromise(hashesPath, JSON.stringify(hashes, null, 2), {});
 }
 
-function jpegVersusThumbnail(projectDir, srcFile, absSrcFile) {
-  const relativePath = absSrcFile.slice(srcDir.length, -4);
-  const smallestVersion = `${relativePath}-${config.imgSizes[0]}px.jpg`;
-  return path.join(destDir, smallestVersion);
-}
-
-function jpegs(done) {
-  gulp.src(`${srcDir}/**/*.jpg`)
-    .pipe(newy(jpegVersusThumbnail))
-    .pipe(responsive({
-      '**/*.jpg': config.imgSizes.map((size) => ({
-        width: size,
-        rename: { suffix: `-${size}px` },
-        withoutEnlargement: false,
-      })),
-    }, {
-      quality: 65,
-      progressive: true,
-      withMetadata: false,
-      errorOnEnlargement: false,
-    }))
-    .on('error', (err) => {
-      if (!err.message.startsWith('Available images do not match')) {
-        log.error(err);
-      }
-    })
-    .pipe(gulp.dest(destDir));
-  done();
+async function jpegs() {
+  const tempCrops = [
+    {
+      name: 'original',
+      renditions: config.imgSizes,
+    },
+  ];
+  const matches = await fileUtils.globPromise(`${srcDir}/**/*.jpg`);
+  const imgPromises = matches.map((match) => {
+    const destPath = `${destDir}${match.slice(srcDir.length)}`;
+    const imgDestDir = path.dirname(destPath);
+    return imageUtils.createRenditions(match, imgDestDir, tempCrops);
+  });
+  await Promise.all(imgPromises);
 }
 
 async function encodeAudio() {
@@ -256,18 +246,6 @@ async function encodeVideo() {
   return outputs;
 }
 
-function localServer(done) {
-  connect.server({
-    root: destDir,
-    port: process.env.PORT || 8000,
-    livereload: Boolean(process.env.LIVE_RELOAD),
-  });
-  process.on('SIGINT', () => {
-    connect.serverClose();
-    done();
-  });
-}
-
 function clean() {
   return del([
     `${path.resolve(process.cwd(), config.cacheDir)}/**/*`,
@@ -283,44 +261,94 @@ function makeCacheDir() {
   });
 }
 
-const prerequisites = gulp.series([
-  makeCacheDir,
-  gulp.parallel([
-    templates,
-    scss,
-    encodeAudio,
-    encodeVideo,
-  ]),
-]);
-
-const html = gulp.series([
-  prerequisites,
-  renderYagss,
-]);
-
-const build = gulp.parallel([
-  html,
-  jpegs,
-  nonYagss,
-]);
-
-const buildFresh = gulp.series([clean, build]);
-
-function watchFiles() {
-  gulp.watch(`${srcDir}/**/*.(md|js|jsx)`, renderYagss);
-  gulp.watch(`${srcDir}/**/*.(jpg)`, jpegs);
-  gulp.watch(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`, nonYagss);
-  gulp.watch(`${parsedScssPath.dir}/**/*`, html);
-  gulp.watch(`${templatesDir}/**/*`, html);
+async function prerequisites() {
+  await makeCacheDir();
+  await Promise.all([
+    templates(),
+    scss(),
+    encodeAudio(),
+    encodeVideo(),
+  ]);
 }
 
-const serveAndWatch = gulp.parallel([localServer, watchFiles]);
+async function html() {
+  await prerequisites();
+  await renderYagss();
+}
+
+async function build() {
+  await Promise.all([
+    html(),
+    jpegs(),
+    nonYagss(),
+  ]);
+}
+
+async function buildFresh() {
+  await clean();
+  await build();
+}
+
+function localServer() {
+  const port = process.env.PORT || 8000;
+  const serve = serveStatic(destDir);
+  const server = http.createServer((req, res) => {
+    const done = finalhandler(req, res);
+    serve(req, res, done);
+  });
+  return new Promise((resolve) => {
+    server.listen(port);
+    log(`now serving on ${port}`);
+    process.on('SIGINT', async () => {
+      log('stopping server');
+      await server.close();
+      resolve();
+    });
+  });
+}
+
+async function watchFiles() {
+  const patterns = [
+    [`${srcDir}/**/*.(md|js|jsx)`, renderYagss],
+    [`${srcDir}/**/*.(jpg)`, jpegs],
+    [`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`, nonYagss],
+    [`${parsedScssPath.dir}/**/*`, html],
+    [`${templatesDir}/**/*`, html],
+  ];
+  const watchers = patterns.map((pattern) => chokidar.watch(pattern[0], pattern[1]));
+  return new Promise((resolve) => {
+    log(`watching ${srcDir}`);
+    process.on('SIGINT', async () => {
+      log('stopping file watchers');
+      const stoppers = watchers.map((watcher) => watcher.close());
+      await Promise.all(stoppers);
+      resolve();
+    });
+  });
+}
+
+async function serveAndWatch() {
+  await Promise.all([
+    localServer(),
+    watchFiles(),
+  ]);
+}
+
+async function start() {
+  await build();
+  await serveAndWatch();
+}
+
+async function cleanStart() {
+  await buildFresh();
+  await serveAndWatch();
+}
 
 exports.serve = serveAndWatch;
 exports.build = build;
 exports.cleanbuild = buildFresh;
-exports.start = gulp.series([build, serveAndWatch]);
-exports.cleanstart = gulp.series([buildFresh, serveAndWatch]);
+exports.start = start;
+exports.cleanstart = cleanStart;
 
 if (require.main === module) {
   if (process.argv.length < 3) {
