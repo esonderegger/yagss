@@ -51,7 +51,7 @@
     "react-dom": "^16.13.1",
     "section-matter": "^1.0.0",
     "serve-static": "^1.14.1",
-    "sharp": "^0.26.1",
+    "sharp": "^0.28.1",
     "webpack": "^5.0.0",
     "yaml": "^1.10.0"
   },
