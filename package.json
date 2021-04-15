@@ -41,7 +41,7 @@
     "ffprobe": "^1.1.2",
     "finalhandler": "^1.1.2",
     "glob": "^7.1.6",
-    "image-size": "^0.9.1",
+    "image-size": "^1.0.0",
     "iptc-reader": "^1.0.0",
     "marked": "^1.2.0",
     "node-sass": "^4.14.1",
