@@ -44,7 +44,7 @@
     "image-size": "^0.9.1",
     "iptc-reader": "^1.0.0",
     "marked": "^1.2.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "pretty": "^2.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
