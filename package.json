@@ -67,6 +67,6 @@
     "jest": "^26.5.2",
     "react-icons": "^3.11.0",
     "react-slider-simple": "^4.0.5",
-    "recharts": "^1.8.5"
+    "recharts": "^2.1.14"
   }
 }
