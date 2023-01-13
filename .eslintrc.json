@@ -1,7 +1,7 @@
 {
   "ignorePatterns": ["node_modules/", "docs/"],
   "extends": [
-    "airbnb",
+    "prettier",
     "plugin:jest/all"
   ],
   "parserOptions": {
@@ -9,6 +9,7 @@
     "sourceType": "module"
   },
   "plugins": [
+    "prettier",
     "react"
   ],
   "rules": {

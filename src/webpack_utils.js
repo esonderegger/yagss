@@ -6,7 +6,8 @@ const webpack = require('webpack');
 const fileUtils = require('./file_utils');
 
 function transpileJs(entries, outputPath) {
-  const envMode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+  const envMode =
+    process.env.NODE_ENV === 'production' ? 'production' : 'development';
   const config = {
     mode: envMode,
     entry: entries,
@@ -23,7 +24,9 @@ function transpileJs(entries, outputPath) {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: (module) => {
-              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+              const packageName = module.context.match(
+                /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+              )[1];
               return packageName.replace('@', '');
             },
           },
@@ -41,10 +44,7 @@ function transpileJs(entries, outputPath) {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: [
-                '@babel/env',
-                '@babel/preset-react',
-              ],
+              presets: ['@babel/env', '@babel/preset-react'],
             },
           },
         },
@@ -78,7 +78,9 @@ function transpileJs(entries, outputPath) {
               });
               return acc;
             }, new Set());
-            const withSlashes = Array.from(epFiles).map((f) => path.join('/', f));
+            const withSlashes = Array.from(epFiles).map((f) =>
+              path.join('/', f)
+            );
             resolutionObj[ep.options.name] = withSlashes;
           });
           resolve(resolutionObj);
@@ -92,28 +94,39 @@ function transpileScss(entry, outputDir, prodMode) {
   const entryDir = path.dirname(entry);
   const entryBase = path.basename(entry, '.scss');
   return new Promise((resolve, reject) => {
-    nodeSass.render({
-      file: entry,
-      outFile: path.join(entryDir, `${entryBase}.css`),
-      outputStyle: prodMode ? 'compressed' : 'nested',
-      sourceMap: !prodMode,
-    }, (err, result) => {
-      if (err) {
-        reject(err);
-      } else {
-        const cssHash = crypto.createHash('md5').update(result.css).digest('hex').slice(0, 8);
-        const outputFileName = `${entryBase}.${cssHash}.css`;
-        const outputPath = path.join(outputDir, outputFileName);
-        const cssPromises = [fileUtils.writeFilePromise(outputPath, result.css, {})];
-        if (!prodMode) {
-          const mapPath = path.join(outputDir, `${entryBase}.css.map`);
-          cssPromises.push(fileUtils.writeFilePromise(mapPath, result.map, {}));
+    nodeSass.render(
+      {
+        file: entry,
+        outFile: path.join(entryDir, `${entryBase}.css`),
+        outputStyle: prodMode ? 'compressed' : 'nested',
+        sourceMap: !prodMode,
+      },
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          const cssHash = crypto
+            .createHash('md5')
+            .update(result.css)
+            .digest('hex')
+            .slice(0, 8);
+          const outputFileName = `${entryBase}.${cssHash}.css`;
+          const outputPath = path.join(outputDir, outputFileName);
+          const cssPromises = [
+            fileUtils.writeFilePromise(outputPath, result.css, {}),
+          ];
+          if (!prodMode) {
+            const mapPath = path.join(outputDir, `${entryBase}.css.map`);
+            cssPromises.push(
+              fileUtils.writeFilePromise(mapPath, result.map, {})
+            );
+          }
+          const resolutionObj = {};
+          resolutionObj[entryBase] = outputFileName;
+          Promise.all(cssPromises).then(() => resolve(resolutionObj));
         }
-        const resolutionObj = {};
-        resolutionObj[entryBase] = outputFileName;
-        Promise.all(cssPromises).then(() => resolve(resolutionObj));
       }
-    });
+    );
   });
 }
 

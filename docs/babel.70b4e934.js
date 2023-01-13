@@ -1,1 +1,0 @@
-(self.webpackChunkyagss=self.webpackChunkyagss||[]).push([[716],{5318:e=>{e.exports=function(e){return e&&e.__esModule?e:{default:e}}}}]);

@@ -51,14 +51,17 @@ function addExifData(parsedList, baseDir) {
   const exifPromises = parsedList.map((item) => {
     const jpgGlobPattern = `${path.join(baseDir, item.relativeDir)}/*.jpg`;
     return new Promise((resolve) => {
-      fileUtils.globPromise(jpgGlobPattern).then((jpgMatches) => {
-        const metaPromises = jpgMatches.map(metadataPromise);
-        return Promise.all(metaPromises);
-      }).then((metaEntries) => {
-        // eslint-disable-next-line no-param-reassign
-        item.images = metaEntries;
-        resolve(item);
-      });
+      fileUtils
+        .globPromise(jpgGlobPattern)
+        .then((jpgMatches) => {
+          const metaPromises = jpgMatches.map(metadataPromise);
+          return Promise.all(metaPromises);
+        })
+        .then((metaEntries) => {
+          // eslint-disable-next-line no-param-reassign
+          item.images = metaEntries;
+          resolve(item);
+        });
     });
   });
   return Promise.all(exifPromises);
@@ -91,7 +94,8 @@ function addMetadata(parsedList, baseDir) {
   });
 }
 
-function createRenditions(src, dest, crops) {
+async function createRenditions(src, dest, crops) {
+  await fileUtils.ensureDirectoryExists(dest);
   const imgName = path.parse(src).name;
   const sharpPromises = crops.reduce((acc, cur) => {
     const cropRenditions = cur.renditions.map((rend) => {
@@ -100,7 +104,8 @@ function createRenditions(src, dest, crops) {
     });
     return acc.concat(cropRenditions);
   }, []);
-  return Promise.all(sharpPromises);
+  const promiseResolutions = await Promise.all(sharpPromises);
+  return promiseResolutions;
 }
 
 module.exports = {
