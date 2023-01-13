@@ -27,13 +27,7 @@ const defaultConfig = {
   templatesDir: 'templates',
   cacheDir: '.cache',
   scssFile: 'scss/main.scss',
-  imgSizes: [
-    440,
-    660,
-    880,
-    1320,
-    1760,
-  ],
+  imgSizes: [440, 660, 880, 1320, 1760],
   videoStreams: { height: [360, 540, 720, 900] },
 };
 
@@ -80,9 +74,13 @@ function paginate(parsedList) {
       if (typeof parsed[k] === 'object' && parsed[k].directory) {
         noDirectories = false;
         const filterStr = `/${parsed[k].directory}/`;
-        const matches = parsedList.filter((item) => item.relativeURL.startsWith(filterStr));
+        const matches = parsedList.filter((item) =>
+          item.relativeURL.startsWith(filterStr)
+        );
         if (parsed[k].sortOn) {
-          matches.sort((a, b) => a[parsed[k].sortOn].localeCompare(b[parsed[k].sortOn]));
+          matches.sort((a, b) =>
+            a[parsed[k].sortOn].localeCompare(b[parsed[k].sortOn])
+          );
         }
         if (parsed[k].reversed) {
           matches.reverse();
@@ -93,16 +91,30 @@ function paginate(parsedList) {
         }
         for (let i = 0; i < numPages; i += 1) {
           const parsedCopy = JSON.parse(JSON.stringify(parsed));
-          const sliceIndices = [i * parsed.paginate.count, (i + 1) * parsed.paginate.count];
-          parsedCopy[parsed.paginate.key] = matches.slice(sliceIndices[0], sliceIndices[1]);
+          const sliceIndices = [
+            i * parsed.paginate.count,
+            (i + 1) * parsed.paginate.count,
+          ];
+          parsedCopy[parsed.paginate.key] = matches.slice(
+            sliceIndices[0],
+            sliceIndices[1]
+          );
           for (let j = 0; j < parsedCopy[parsed.paginate.key].length; j += 1) {
             if (parsedCopy[parsed.paginate.key][j].js) {
-              parsedCopy.js = parsedCopy.js.concat(parsedCopy[parsed.paginate.key][j].js);
+              parsedCopy.js = parsedCopy.js.concat(
+                parsedCopy[parsed.paginate.key][j].js
+              );
             }
           }
-          const stemIndices = [parsed.relativeDir.length + 1, -(parsed.extension.length + 1)];
-          const oldStem = parsed.relativeURL.slice(stemIndices[0], stemIndices[1]);
-          if (i < (numPages - 1)) {
+          const stemIndices = [
+            parsed.relativeDir.length + 1,
+            -(parsed.extension.length + 1),
+          ];
+          const oldStem = parsed.relativeURL.slice(
+            stemIndices[0],
+            stemIndices[1]
+          );
+          if (i < numPages - 1) {
             parsedCopy.next = `${oldStem}${i + 2}.${parsed.extension}`;
           }
           if (i > 0) {
@@ -159,19 +171,27 @@ function renderYagss() {
   return new Promise((resolve) => {
     const hashesPath = path.join(cacheDir, 'hashed-assets.json');
     let bigObj = {};
-    fileUtils.readFilePromise(hashesPath, 'utf8').then((contents) => {
-      config.cssFile = JSON.parse(contents)[config.cssFileRelative];
-      return fileUtils.globPromise(`${srcDir}/**/*.md`);
-    })
+    fileUtils
+      .readFilePromise(hashesPath, 'utf8')
+      .then((contents) => {
+        config.cssFile = JSON.parse(contents)[config.cssFileRelative];
+        return fileUtils.globPromise(`${srcDir}/**/*.md`);
+      })
       .then((matches) => {
-        const parsePromises = matches.map((match) => (
+        const parsePromises = matches.map((match) =>
           markdownUtils.parseMdPromise(match, srcDir, config)
-        ));
+        );
         return Promise.all(parsePromises);
       })
-      .then((parsedListNoExif) => imageUtils.addExifData(parsedListNoExif, srcDir))
-      .then((parsedListNoAudio) => mediaUtils.addAudioData(parsedListNoAudio, srcDir, destDir))
-      .then((parsedListNoVideo) => mediaUtils.addVideoData(parsedListNoVideo, srcDir))
+      .then((parsedListNoExif) =>
+        imageUtils.addExifData(parsedListNoExif, srcDir)
+      )
+      .then((parsedListNoAudio) =>
+        mediaUtils.addAudioData(parsedListNoAudio, srcDir, destDir)
+      )
+      .then((parsedListNoVideo) =>
+        mediaUtils.addVideoData(parsedListNoVideo, srcDir)
+      )
       .then((parsedList) => {
         const siteDataPath = path.join(cacheDir, 'siteData');
         return siteUtils.writeImportableSiteData(parsedList, siteDataPath);
@@ -185,7 +205,9 @@ function renderYagss() {
         Object.keys(jsHashes).forEach((relativeURL) => {
           bigObj[relativeURL].bundledJS = jsHashes[relativeURL];
         });
-        return Promise.all(Object.values(bigObj).map((item) => writeMdFile(item, destDir)));
+        return Promise.all(
+          Object.values(bigObj).map((item) => writeMdFile(item, destDir))
+        );
       })
       .then(resolve);
   }).catch((error) => {
@@ -194,7 +216,9 @@ function renderYagss() {
 }
 
 async function nonYagss() {
-  const matches = await fileUtils.globPromise(`${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`);
+  const matches = await fileUtils.globPromise(
+    `${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`
+  );
   const copies = matches.map((match) => {
     const destPath = `${destDir}${match.slice(srcDir.length)}`;
     return fs.promises.copyFile(match, destPath);
@@ -203,9 +227,17 @@ async function nonYagss() {
 }
 
 async function scss() {
-  const hashes = await webpackUtils.transpileScss(scssPath, destDir, process.env.NODE_ENV === 'production');
+  const hashes = await webpackUtils.transpileScss(
+    scssPath,
+    destDir,
+    process.env.NODE_ENV === 'production'
+  );
   const hashesPath = path.join(cacheDir, 'hashed-assets.json');
-  return fileUtils.writeFilePromise(hashesPath, JSON.stringify(hashes, null, 2), {});
+  return fileUtils.writeFilePromise(
+    hashesPath,
+    JSON.stringify(hashes, null, 2),
+    {}
+  );
 }
 
 async function jpegs() {
@@ -263,12 +295,7 @@ function makeCacheDir() {
 
 async function prerequisites() {
   await makeCacheDir();
-  await Promise.all([
-    templates(),
-    scss(),
-    encodeAudio(),
-    encodeVideo(),
-  ]);
+  await Promise.all([templates(), scss(), encodeAudio(), encodeVideo()]);
 }
 
 async function html() {
@@ -277,11 +304,7 @@ async function html() {
 }
 
 async function build() {
-  await Promise.all([
-    html(),
-    jpegs(),
-    nonYagss(),
-  ]);
+  await Promise.all([html(), jpegs(), nonYagss()]);
 }
 
 async function buildFresh() {
@@ -315,7 +338,9 @@ async function watchFiles() {
     [`${parsedScssPath.dir}/**/*`, html],
     [`${templatesDir}/**/*`, html],
   ];
-  const watchers = patterns.map((pattern) => chokidar.watch(pattern[0], pattern[1]));
+  const watchers = patterns.map((pattern) =>
+    chokidar.watch(pattern[0], pattern[1])
+  );
   return new Promise((resolve) => {
     log(`watching ${srcDir}`);
     process.on('SIGINT', async () => {
@@ -328,10 +353,7 @@ async function watchFiles() {
 }
 
 async function serveAndWatch() {
-  await Promise.all([
-    localServer(),
-    watchFiles(),
-  ]);
+  await Promise.all([localServer(), watchFiles()]);
 }
 
 async function start() {

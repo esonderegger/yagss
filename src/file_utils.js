@@ -43,6 +43,15 @@ function writeFilePromise(filePath, data, options) {
   });
 }
 
+async function ensureDirectoryExists(dirPath) {
+  try {
+    await fs.promises.access(dirPath);
+  } catch (error) {
+    console.log('catching fs error', error);
+    await fs.promises.mkdir(dirPath, { recursive: true });
+  }
+}
+
 function globPromise(pattern, options) {
   return new Promise((resolve, reject) => {
     glob(pattern, options, (err, matches) => {
@@ -57,6 +66,7 @@ function globPromise(pattern, options) {
 
 module.exports = {
   readFilePromise,
+  ensureDirectoryExists,
   writeFilePromise,
   globPromise,
 };

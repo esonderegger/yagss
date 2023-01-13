@@ -20,10 +20,12 @@ function parseMdPromise(filePath, baseDir, config) {
       try {
         const parsed = {};
         Object.assign(parsed, config, sectionMatter(f));
-        parsed.content = marked(parsed.content, { smartypants: true });
+        parsed.content = marked.marked(parsed.content, { smartypants: true });
         for (let i = 0; i < parsed.sections.length; i += 1) {
           const section = parsed.sections[i];
-          section.content = marked(section.content, { smartypants: true });
+          section.content = marked.marked(section.content, {
+            smartypants: true,
+          });
           const data = yaml.parse(section.data);
           Object.assign(section, data);
           delete section.data;
