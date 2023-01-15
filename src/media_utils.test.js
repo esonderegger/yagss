@@ -8,7 +8,9 @@ describe('probe functionality', () => {
     const filePath = './test_fixtures/marines_hymn.mp3';
     const probeResults = await audioUtils.probe(filePath);
     expect(probeResults.streams).toHaveLength(2);
-    const audioStream = probeResults.streams.find((s) => s.codec_type === 'audio');
+    const audioStream = probeResults.streams.find(
+      (s) => s.codec_type === 'audio'
+    );
     expect(!!audioStream).toBe(true);
     expect(audioStream.codec_name).toBe('mp3');
   });
@@ -31,13 +33,17 @@ describe('r128encode functionality', () => {
       await fs.promises.mkdir('test_encodes');
     }
     const contents = await fs.promises.readdir('test_encodes');
-    const deletions = contents.map((item) => fs.promises.unlink(path.join('test_encodes', item)));
+    const deletions = contents.map((item) =>
+      fs.promises.unlink(path.join('test_encodes', item))
+    );
     await Promise.all(deletions);
   });
 
   afterAll(async () => {
     const contents = await fs.promises.readdir('test_encodes');
-    const deletions = contents.map((item) => fs.promises.unlink(path.join('test_encodes', item)));
+    const deletions = contents.map((item) =>
+      fs.promises.unlink(path.join('test_encodes', item))
+    );
     await Promise.all(deletions);
     await fs.promises.rmdir('test_encodes');
   });

@@ -133,7 +133,10 @@ async function r128encode(srcPath, destDir) {
 
 function addAudioData(parsedList, baseDir, destDir) {
   const mp3Promises = parsedList.map(async (item) => {
-    const mp3GlobPattern = `${path.join(baseDir, item.relativeDir)}/*.{wav,mp3}`;
+    const mp3GlobPattern = `${path.join(
+      baseDir,
+      item.relativeDir
+    )}/*.{wav,mp3}`;
     const mp3Matches = await fileUtils.globPromise(mp3GlobPattern);
     const probes = mp3Matches.map(probe);
     const probeResults = await Promise.all(probes);
@@ -161,7 +164,7 @@ function addAudioData(parsedList, baseDir, destDir) {
 
 function magicBitrate(width, height) {
   const p = width * height;
-  return Math.max((p * 0.0008) + ((p ** 0.19) * 425) - 3600, p * 0.0008);
+  return Math.max(p * 0.0008 + p ** 0.19 * 425 - 3600, p * 0.0008);
 }
 
 function streamFfArgs(stream, outputPath) {
@@ -206,9 +209,13 @@ function streamFfArgs(stream, outputPath) {
 }
 
 function applicableStreams(streams, probeResults) {
-  const videoStream = probeResults.streams.find((s) => s.codec_type === 'video');
+  const videoStream = probeResults.streams.find(
+    (s) => s.codec_type === 'video'
+  );
   const aspect = videoStream.width / videoStream.height;
-  const heights = streams.height ? streams.height : streams.width.map((s) => s / aspect);
+  const heights = streams.height
+    ? streams.height
+    : streams.width.map((s) => s / aspect);
   const notUpscaled = heights.filter((s) => videoStream.height >= s);
   const theStreams = notUpscaled.map((s) => {
     const height = s;
@@ -221,10 +228,7 @@ function applicableStreams(streams, probeResults) {
 }
 
 function indexManifest(videoStreams, captionStreams) {
-  const manifestLines = [
-    '#EXTM3U',
-    '#EXT-X-VERSION:3',
-  ];
+  const manifestLines = ['#EXTM3U', '#EXT-X-VERSION:3'];
   captionStreams.forEach((s, i) => {
     const captionArgs = [
       '#EXT-X-MEDIA:TYPE=SUBTITLES',
@@ -300,7 +304,10 @@ async function videoEncode(srcPath, streams, destDir, log) {
 
 function addVideoData(parsedList, baseDir) {
   const videoPromises = parsedList.map(async (item) => {
-    const videoGlobPattern = `${path.join(baseDir, item.relativeDir)}/*.{mov, mp4}`;
+    const videoGlobPattern = `${path.join(
+      baseDir,
+      item.relativeDir
+    )}/*.{mov, mp4}`;
     const videoMatches = await fileUtils.globPromise(videoGlobPattern);
     const probes = videoMatches.map(probe);
     const probeResults = await Promise.all(probes);
