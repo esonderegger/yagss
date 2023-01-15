@@ -10,5 +10,7 @@ yagss-config.yaml
 .eslintrc.json
 .gitignore
 .npmignore
+.prettierrc.json
 .travis.yml
 jest.config.js
+yaggs-config.yaml

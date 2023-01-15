@@ -47,7 +47,7 @@ async function ensureDirectoryExists(dirPath) {
   try {
     await fs.promises.access(dirPath);
   } catch (error) {
-    console.log('catching fs error', error);
+    // console.log('catching fs error', error);
     await fs.promises.mkdir(dirPath, { recursive: true });
   }
 }

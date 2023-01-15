@@ -219,9 +219,11 @@ async function nonYagss() {
   const matches = await fileUtils.globPromise(
     `${srcDir}/**/*.!(md|js|jsx|jpg|wav|mp3|mov|mp4)`
   );
-  const copies = matches.map((match) => {
+  const copies = matches.map(async (match) => {
     const destPath = `${destDir}${match.slice(srcDir.length)}`;
-    return fs.promises.copyFile(match, destPath);
+    const destDirName = path.dirname(destPath);
+    await fileUtils.ensureDirectoryExists(destDirName);
+    await fs.promises.copyFile(match, destPath);
   });
   await Promise.all(copies);
 }
