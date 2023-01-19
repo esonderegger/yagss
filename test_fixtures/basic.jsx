@@ -1,6 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 const component = (<h1>Hello, world!</h1>);
 const node = document.getElementById('root');
-ReactDOM.render(component, node);
+const root = createRoot(node);
+root.render(component);
