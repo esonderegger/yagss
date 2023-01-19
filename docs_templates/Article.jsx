@@ -23,7 +23,7 @@ const article = (props) => {
     const templatePath = `./${section.template}.jsx`;
     /* eslint-disable */
     const Template = require(templatePath);
-    // /* eslint-enable */
+    /* eslint-enable */
     const elementProps = Object.assign({}, props, sectionProps[i]);
     const element = React.createElement(Template.default, elementProps);
     return element;

@@ -1,26 +1,43 @@
 {
   "ignorePatterns": ["node_modules/", "docs/"],
   "extends": [
-    "prettier",
-    "plugin:jest/all"
+    "eslint:recommended",
+    "prettier"
   ],
   "parserOptions": {
-    "ecmaVersion": 2017,
+    "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [
-    "prettier",
-    "react"
-  ],
-  "rules": {
-    "jest/no-hooks": [
-      "error",
-      {
-        "allow": ["beforeEach", "beforeAll", "afterEach", "afterAll"]
-      }
-    ]
-  },
   "env": {
-    "browser": true
-  }
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node":true
+  },
+  "plugins": [
+    "prettier"
+  ],
+  "overrides": [
+    {
+      "files": ["src/**/*.test.js"],
+      "plugins": ["jest"],
+      "extends": "plugin:jest/recommended",
+      "rules": {
+        "jest/no-hooks": [
+          "error",
+          {
+            "allow": ["beforeEach", "beforeAll", "afterEach", "afterAll"]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["**/*.jsx"],
+      "plugins": ["react"],
+      "extends": [
+        "plugin:react/recommended",
+        "plugin:jsx-a11y/recommended"
+      ]
+    }
+  ]
 }
